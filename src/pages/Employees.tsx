@@ -24,25 +24,28 @@ function Employees(){
 
 
   function addEmployee() {
-    const newEmployee = {
-      name: name,
-      department: department,
-      position: position,
-      status: "Active",
+    
+      const employeeData ={
+        name:name,
+        department:department,
+        position:position,
+        status:"Active",
+      };
+      if(editIndex !== null){
+        const updatedEmployees = [...employees];
+        updatedEmployees[editIndex] = employeeData;
+        setEmployees(updatedEmployees);
+        setEditIndex(null);
+
+      }   else {
+        setEmployees([...employees,employeeData]);
+      }
+      setName("");
+      setDepartment("");
+      setPosition("");
+      setShowForm(false);
     };
-
-
-
-
-    setEmployees([...employees, newEmployee]);
-
-    setName("");
-    setDepartment("");
-    setPosition("");
-
-
-    setShowForm(false);
-  }
+  
     
 
   const deleteEmployee = (index:number) => {
@@ -90,7 +93,7 @@ function Employees(){
           />  
 
           <br /><br />
-          <button onClick={addEmployee}>Save</button>
+          <button onClick={addEmployee}>{editIndex !== null ? "Update Employee" : "Save"}</button>
           </div>
           )}
       <table border={1} cellPadding={10}>
