@@ -1,7 +1,24 @@
+import {useState} from "react";
 function Employees(){
+  const [showForm, setShowForm] = useState(false);
+    
+
   return(
     <div>
       <h1>Employees</h1>
+      <button className="add-btn" onClick={() => setShowForm(true)}>+ Add Employee</button>
+      {showForm && (
+        <div>
+          <h2>Add Employee</h2>
+          <input type="text" placeholder="Enter the Name"/>
+          <br /><br />
+          <input type="text" placeholder="Enter the department"/>
+          <br /><br />
+          <input type="text" placeholder="Enter the position" />  
+          <br /><br />
+          <button>Save</button>
+          </div>
+          )}
       <table border={1} cellPadding={10}>
         <thead>
           <tr>

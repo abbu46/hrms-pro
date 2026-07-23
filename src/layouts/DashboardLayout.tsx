@@ -11,8 +11,27 @@ function DashboardLayout() {
         <Header />
 
         <main>
-          <h1>Dashboard Content</h1>
-          <p>Manage your employees and HR activities here.</p>
+          <h1>Dashboard</h1>
+          <p>Welocme to HRMS pro dashboard.</p>
+          <div className="cards">
+            <div className="card">
+              <h3>Total Employees</h3>
+              <p>1</p>
+              
+            </div>
+            <div className="card">
+              <h3>Present Today</h3>
+              <p>1</p>
+            </div>
+            <div className="card">
+              <h3>Pending Leaves</h3>
+              <p>0</p>
+          </div>
+          <div className="card">
+            <h3>Active Employees</h3>
+            <p>1</p>
+          </div>
+          </div>
         </main>
       </div>
     </div>
