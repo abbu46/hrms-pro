@@ -29,7 +29,10 @@ function Employees(){
       position:position,
       status:"Active",
     };
+    
+    
 
+    
     setEmployees([...employees,newEmployee]);
 
     setName("");
@@ -40,6 +43,11 @@ function Employees(){
     setShowForm(false);
   };
     
+
+  const deleteEmployee = (index:number) => {
+    const updatedEmployees = employees.filter((_, i) => i !== index);
+    setEmployees(updatedEmployees);
+  };
 
   return(
     <div>
@@ -81,6 +89,7 @@ function Employees(){
             <th>Department</th>
             <th>Position</th>
             <th>Status</th>
+            <th>Action</th>
           </tr>
         </thead>
 
@@ -91,6 +100,9 @@ function Employees(){
               <td>{employee.department}</td>
               <td>{employee.position}</td>
               <td>{employee.status}</td>
+              <td>
+                <button onClick={() => deleteEmployee(index)}>Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>
