@@ -20,33 +20,44 @@ function Employees(){
   const [name,setName] = useState("");
   const [department,setDepartment] = useState("");
   const [position,setPosition] = useState("");
+  const [editIndex,setEditIndex] = useState<number | null>(null);
 
 
-  const addEmployee =() =>{
-    const newEmployee ={
-      name:name,
-      department:department,
-      position:position,
-      status:"Active",
+  function addEmployee() {
+    const newEmployee = {
+      name: name,
+      department: department,
+      position: position,
+      status: "Active",
     };
-    
-    
 
-    
-    setEmployees([...employees,newEmployee]);
+
+
+
+    setEmployees([...employees, newEmployee]);
 
     setName("");
     setDepartment("");
     setPosition("");
-    
+
 
     setShowForm(false);
-  };
+  }
     
 
   const deleteEmployee = (index:number) => {
     const updatedEmployees = employees.filter((_, i) => i !== index);
     setEmployees(updatedEmployees);
+  };
+
+  const editEmployee = (index:number) => {
+    const employee= employees[index];
+
+    setName(employee.name);
+    setDepartment(employee.department);
+    setPosition(employee.position);
+    setEditIndex(index);
+    setShowForm(true);
   };
 
   return(
@@ -101,6 +112,8 @@ function Employees(){
               <td>{employee.position}</td>
               <td>{employee.status}</td>
               <td>
+                <button onClick={() => editEmployee(index)}>Edit</button>
+
                 <button onClick={() => deleteEmployee(index)}>Delete</button>
               </td>
             </tr>
