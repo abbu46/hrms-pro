@@ -21,6 +21,7 @@ function Employees(){
   const [department,setDepartment] = useState("");
   const [position,setPosition] = useState("");
   const [editIndex,setEditIndex] = useState<number | null>(null);
+  const [search,setSearch] = useState("");
 
 
   function addEmployee() {
@@ -63,14 +64,23 @@ function Employees(){
     setShowForm(true);
   };
 
+  const filteredEmployees = employees.filter((employee) => employee.name.toLowerCase().includes(search.toLowerCase()));
+
   return(
     <div>
       <h1>Employees</h1>
+      <input 
+      type="text"
+      placeholder= "search employee..."
+      value= {search}
+      onChange={(e) => setSearch(e.target.value)}/>
+
       <button className="add-btn" onClick={() => setShowForm(true)}>+ Add Employee</button>
       {showForm && (
         <div>
           <h2>Add Employee</h2>
-          <input type="text" 
+          <input
+          type="text" 
           placeholder="Enter the Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -108,7 +118,7 @@ function Employees(){
         </thead>
 
         <tbody>
-          {employees.map((employee,index) => (
+          {filteredEmployees.map((employee,index) => (
             <tr key={index}>
               <td>{employee.name}</td>
               <td>{employee.department}</td>
