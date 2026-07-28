@@ -31,8 +31,10 @@ const updateStatus = (index: number , status: string ) => {
 const saveAttendance =() => {
   const record ={
     date: date,
-    employees: attendance,
+    employees: attendance.map((employee) => ({...employee, })),
+  
   };
+  
   setAttendanceHistory([...attendanceHistory, record]);
   alert("Attendance saved successfully!");
 };
@@ -143,7 +145,11 @@ const absentCount= attendance.filter(
     
       </table>
       <h2>Attendance History</h2>
-      {attendanceHistory.map((record, index) =>(
+      {attendanceHistory.length === 0? (
+        <p>No attendance records saved yet.</p>
+      ):(
+      
+      attendanceHistory.map((record, index) =>(
         <div key={index}>
           <h3>Date: {record.date}</h3>
           <table border={1} cellPadding={10}>
@@ -164,7 +170,8 @@ const absentCount= attendance.filter(
                   <td style= {{
                     color: employee.status === "Present" ? "green" :"red",
                     fontWeight:"bold"
-                  }}>
+                  }}
+                  >
                      {employee.status}
                      </td>
                 
@@ -175,7 +182,7 @@ const absentCount= attendance.filter(
             </div>
       ))
         
-      }
+      )}
     </div>
   );
 }
