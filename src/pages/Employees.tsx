@@ -1,22 +1,20 @@
-import {useState} from "react";
+import { useState, useContext } from "react";
+import { Link } from "react-router-dom";
+import { EmployeeContext } from "../context/EmployeeContext";
 function Employees(){
 
-  const [showForm, setShowForm] = useState(false);
-  const [employees, setEmployees] = useState([
-    {
-      name:"Abrar Abdul",
-      department:"IT",
-      position:"Front-end Developer",
-      status:"Active",
-    },
-    {
-      name:"John Smith",
-      department:"HR",
-      position:"HR Manager",
-      status: "Active",
   
-    },
-  ]);
+   const context = useContext(EmployeeContext);
+
+if (!context) {
+  return <h2>Context not found</h2>;
+}
+
+const { employees, setEmployees } = context;
+
+
+  const [showForm, setShowForm] = useState(false);
+  
   const [name,setName] = useState("");
   const [department,setDepartment] = useState("");
   const [position,setPosition] = useState("");
@@ -124,10 +122,16 @@ function Employees(){
               <td>{employee.department}</td>
               <td>{employee.position}</td>
               <td>{employee.status}</td>
-              <td>
-                <button onClick={() => editEmployee(index)}>Edit</button>
+              
 
-                <button onClick={() => deleteEmployee(index)}>Delete</button>
+              <td>
+                <Link to={`/employee-profile/${index}`}>
+                <button>View Profile</button>
+                </Link>
+
+                <button onClick={()=> editEmployee(index)}> Edit</button>
+
+                <button onClick={()=> deleteEmployee(index)}>Delete</button>
               </td>
             </tr>
           ))}

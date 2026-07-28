@@ -10,6 +10,9 @@ function Sidebar(){
         <li><Link to="/attendance">Attendance</Link></li>
         <li><Link to="/leaves">Leaves</Link></li>
         <li><Link to="/">Logout</Link></li>
+        <li><Link to="/employee-profile">Employee Profile</Link></li>
+        
+        <li><Link to="/payroll">Payroll</Link></li>
         
       </ul>
     </aside>
