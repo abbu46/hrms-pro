@@ -7,39 +7,124 @@ import Employees from "./pages/Employees";
 import Attendance from "./pages/Attendance";
 import Leaves from "./pages/Leaves";
 import EmployeeProfile from "./pages/EmployeeProfile";
-import EmployeeProvider from "./context/EmployeeContext";
 import Payroll from "./pages/Payroll";
 
+
+import EmployeeProvider from "./context/EmployeeContext";
+import LeaveProvider from "./context/LeaveContext";
+import AttendanceProvider from "./context/AttendanceContext";
+
+
+import ProtectedRoute from "./components/ProtectedRoute";
+
+
+
 function App() {
+
+
   return (
+
     <EmployeeProvider>
-    <BrowserRouter>
 
-      <Routes>
+      <LeaveProvider>
 
-        <Route path="/" element={<Login />} />
+        <AttendanceProvider>
 
-        <Route path="/dashboard" element={<Dashboard />} />
 
-        <Route path="/employees" element={<Employees />} />
+          <BrowserRouter>
 
-        <Route path="/attendance" element={<Attendance />} />
 
-        <Route path="/leaves" element={<Leaves />} />
+            <Routes>
 
-        <Route 
-        path="/payroll" element={<Payroll />} />
 
-        <Route 
-          path="/employee-Profile/:id" 
-          element={<EmployeeProfile />} 
-        />
+              <Route 
+                path="/" 
+                element={<Login />} 
+              />
 
-      </Routes>
 
-    </BrowserRouter>
+
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+
+
+              <Route
+                path="/employees"
+                element={
+                  <ProtectedRoute>
+                    <Employees />
+                  </ProtectedRoute>
+                }
+              />
+
+
+
+              <Route
+                path="/attendance"
+                element={
+                  <ProtectedRoute>
+                    <Attendance />
+                  </ProtectedRoute>
+                }
+              />
+
+
+
+              <Route
+                path="/leaves"
+                element={
+                  <ProtectedRoute>
+                    <Leaves />
+                  </ProtectedRoute>
+                }
+              />
+
+
+
+              <Route
+                path="/payroll"
+                element={
+                  <ProtectedRoute>
+                    <Payroll />
+                  </ProtectedRoute>
+                }
+              />
+
+
+
+              <Route
+                path="/employee-profile/:id"
+                element={
+                  <ProtectedRoute>
+                    <EmployeeProfile />
+                  </ProtectedRoute>
+                }
+              />
+
+
+
+            </Routes>
+
+
+          </BrowserRouter>
+
+
+        </AttendanceProvider>
+
+      </LeaveProvider>
+
     </EmployeeProvider>
+
   );
+
 }
+
 
 export default App;

@@ -1,21 +1,63 @@
-import {Link} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
-function Sidebar(){
-  return(
+function Sidebar() {
+
+  return (
     <aside className="sidebar">
+
       <h2>HRMS Pro</h2>
+
+
       <ul>
-        <li><Link to="/dashboard">Dashboard</Link></li>
-        <li><Link to="/employees">Employees</Link></li>
-        <li><Link to="/attendance">Attendance</Link></li>
-        <li><Link to="/leaves">Leaves</Link></li>
-        <li><Link to="/">Logout</Link></li>
-        <li><Link to="/employee-profile">Employee Profile</Link></li>
-        
-        <li><Link to="/payroll">Payroll</Link></li>
-        
+
+        <li>
+          <NavLink to="/dashboard">
+            Dashboard
+          </NavLink>
+        </li>
+
+
+        <li>
+          <NavLink to="/employees">
+            Employees
+          </NavLink>
+        </li>
+
+
+        <li>
+          <NavLink to="/attendance">
+            Attendance
+          </NavLink>
+        </li>
+
+
+        <li>
+          <NavLink to="/leaves">
+            Leaves
+          </NavLink>
+        </li>
+
+
+        <li>
+          <NavLink to="/payroll">
+            Payroll
+          </NavLink>
+        </li>
+
+
+        <li>
+          <NavLink to="/">
+            Logout
+          </NavLink>
+        </li>
+
+
       </ul>
+
+
     </aside>
   );
 }
+
+
 export default Sidebar;
