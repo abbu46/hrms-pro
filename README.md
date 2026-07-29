@@ -1,75 +1,178 @@
-# React + TypeScript + Vite
+# HRMS Pro - Human Resource Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+HRMS Pro is a modern Human Resource Management System built using React and TypeScript. It helps manage employees, attendance, leaves, payroll, and employee profiles through a clean dashboard interface.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Authentication
+- Login system
+- Protected routes
+- Logout functionality
 
-## React Compiler
+### Employee Management
+- Add new employees
+- Edit employee details
+- Delete employees
+- Search employees
+- View employee profile
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Attendance Management
+- Mark employees as Present/Absent
+- Select attendance date
+- Save attendance history
+- View attendance summary
 
-## Expanding the ESLint configuration
+### Leave Management
+- Apply leave requests
+- Approve leaves
+- Reject leaves
+- Delete leave records
+- Leave status tracking
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Payroll Management
+- Add employee salary details
+- Update payroll information
+- Calculate net salary
+- Generate salary slip PDF
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Dashboard
+- Total employees count
+- Active employees count
+- Attendance overview
+- Leave overview charts
+- Recent employees list
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🛠️ Technologies Used
 
+- React.js
+- TypeScript
+- Vite
+- HTML5
+- CSS3
+- JavaScript (ES6+)
+- React Router
+- React Context API
+- Recharts
+- jsPDF
+- Git & GitHub
+
+---
+
+## 📂 Project Structure
+```text
+src
+│
+├── components
+│   ├── Header.tsx
+│   ├── Sidebar.tsx
+│   └── ProtectedRoute.tsx
+│
+├── context
+│   ├── EmployeeContext.tsx
+│   ├── AttendanceContext.tsx
+│   └── LeaveContext.tsx
+│
+├── layouts
+│   ├── DashboardLayout.tsx
+│   └── DashboardLayout.css
+│
+├── pages
+│   ├── Login.tsx
+│   ├── Dashboard.tsx
+│   ├── Employees.tsx
+│   ├── EmployeeProfile.tsx
+│   ├── Attendance.tsx
+│   ├── Leaves.tsx
+│   └── Payroll.tsx
+│
+├── styles
+│   └── global.css
+│
+├── App.tsx
+└── main.tsx 
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 
+
+
+
+## ⚙️ Installation
+
+Clone the repository:
+
+```bash
+git clone your-repository-link
 ```
+
+Navigate to the project folder:
+
+```bash
+cd HRMS-Pro
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+
+---
+
+## 📸 Screenshots
+
+Add screenshots of:
+
+- Login Page
+- Dashboard
+- Employee Management
+- Attendance Management
+- Leave Management
+- Payroll Management
+
+---
+
+## 💡 Key Highlights
+
+- Built with React functional components
+- Developed using TypeScript
+- React Context API for state management
+- Protected routes for secure navigation
+- Local Storage for data persistence
+- Responsive user interface
+- Dashboard with charts and analytics
+- Salary slip PDF generation
+
+---
+
+## 🔮 Future Improvements
+
+- Backend API integration
+- Database integration
+- User roles and permissions
+- Email notifications
+- Advanced reporting
+- Cloud deployment
+
+---
+
+## 👨‍💻 Author
+
+**Abrar Abdul**
+
+---
+
+## ⭐ Project Status
+
+Completed frontend HRMS application featuring employee management, attendance tracking, leave management, payroll processing, dashboard analytics, and salary slip generation.
