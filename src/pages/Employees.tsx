@@ -164,83 +164,63 @@ function Employees() {
 
 
 
-      {showForm && (
+      
 
-        <div>
+        
+           {showForm && (
 
-
-          <h2>
-            {editIndex !== null
-              ? "Edit Employee"
-              : "Add Employee"}
-          </h2>
+  <div className="employee-form-card">
 
 
-
-          <input
-
-            type="text"
-
-            placeholder="Enter Name"
-
-            value={name}
-
-            onChange={(e) => setName(e.target.value)}
-
-          />
-
-
-          <br /><br />
+    <h2>
+      {editIndex !== null
+        ? "Edit Employee"
+        : "Add Employee"}
+    </h2>
 
 
 
-          <input
-
-            type="text"
-
-            placeholder="Enter Department"
-
-            value={department}
-
-            onChange={(e) => setDepartment(e.target.value)}
-
-          />
-
-
-          <br /><br />
+    <input
+      type="text"
+      placeholder="Enter Name"
+      value={name}
+      onChange={(e) => setName(e.target.value)}
+    />
 
 
 
-          <input
-
-            type="text"
-
-            placeholder="Enter Position"
-
-            value={position}
-
-            onChange={(e) => setPosition(e.target.value)}
-
-          />
-
-
-          <br /><br />
+    <input
+      type="text"
+      placeholder="Enter Department"
+      value={department}
+      onChange={(e) => setDepartment(e.target.value)}
+    />
 
 
 
-          <button onClick={addEmployee}>
-
-            {editIndex !== null
-              ? "Update Employee"
-              : "Save"}
-
-          </button>
-
+    <input
+      type="text"
+      placeholder="Enter Position"
+      value={position}
+      onChange={(e) => setPosition(e.target.value)}
+    />
 
 
-        </div>
 
-      )}
+    <button onClick={addEmployee}>
+
+      {editIndex !== null
+        ? "Update Employee"
+        : "Save Employee"}
+
+    </button>
+
+
+  </div>
+
+)}
+
+      
 
 
 

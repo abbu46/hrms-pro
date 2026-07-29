@@ -1,20 +1,44 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+
 
 function Sidebar() {
 
+
+  const navigate = useNavigate();
+
+
+
+  const handleLogout = () => {
+
+    localStorage.removeItem("isLoggedIn");
+
+    navigate("/");
+
+  };
+
+
+
+
   return (
+
     <aside className="sidebar">
 
-      <h2>HRMS Pro</h2>
+
+      <h2>
+        HRMS Pro
+      </h2>
+
 
 
       <ul>
+
 
         <li>
           <NavLink to="/dashboard">
             Dashboard
           </NavLink>
         </li>
+
 
 
         <li>
@@ -24,11 +48,13 @@ function Sidebar() {
         </li>
 
 
+
         <li>
           <NavLink to="/attendance">
             Attendance
           </NavLink>
         </li>
+
 
 
         <li>
@@ -38,6 +64,7 @@ function Sidebar() {
         </li>
 
 
+
         <li>
           <NavLink to="/payroll">
             Payroll
@@ -45,18 +72,28 @@ function Sidebar() {
         </li>
 
 
+
         <li>
-          <NavLink to="/">
+
+          <button
+            className="logout-btn"
+            onClick={handleLogout}
+          >
             Logout
-          </NavLink>
+          </button>
+
         </li>
+
 
 
       </ul>
 
 
+
     </aside>
+
   );
+
 }
 
 

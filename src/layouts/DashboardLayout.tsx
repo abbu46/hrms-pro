@@ -151,38 +151,52 @@ function DashboardLayout() {
             Welcome to HRMS Pro dashboard.
           </p>
 
+             
 
 
           <div className="cards">
 
 
-            <div className="card">
-              <h3>Total Employees</h3>
-              <p>{employees.length}</p>
-            </div>
+  <div className="dashboard-card employee-card">
+
+    <h3>Total Employees</h3>
+
+    <p>{employees.length}</p>
+
+  </div>
 
 
-            <div className="card">
-              <h3>Active Employees</h3>
-              <p>{activeEmployees}</p>
-            </div>
+
+  <div className="dashboard-card active-card">
+
+    <h3>Active Employees</h3>
+
+    <p>{activeEmployees}</p>
+
+  </div>
 
 
-            <div className="card">
-              <h3>Present Today</h3>
-              <p>{presentToday}</p>
-            </div>
+
+  <div className="dashboard-card present-card">
+
+    <h3>Present Today</h3>
+
+    <p>{presentToday}</p>
+
+  </div>
 
 
-            <div className="card">
-              <h3>Pending Leaves</h3>
-              <p>{pendingLeaves}</p>
-            </div>
+
+  <div className="dashboard-card leave-card">
+
+    <h3>Pending Leaves</h3>
+
+    <p>{pendingLeaves}</p>
+
+  </div>
 
 
-          </div>
-
-
+</div>
 
 
           <div style={{display:"flex", gap:"40px", marginTop:"40px"}}>

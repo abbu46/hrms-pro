@@ -139,19 +139,49 @@ function Leaves() {
 
   return (
 
-    <div>
+    <div className="leaves-page">
 
 
       <h1>Leaves</h1>
 
 
 
-      <h3>
-        Pending: {pendingCount} | Approved: {approvedCount} | Rejected: {rejectedCount}
-      </h3>
+      <div className="leave-cards">
+
+
+  <div className="card pending-card">
+
+    <h3>Pending</h3>
+
+    <h2>{pendingCount}</h2>
+
+  </div>
 
 
 
+  <div className="card approved-card">
+
+    <h3>Approved</h3>
+
+    <h2>{approvedCount}</h2>
+
+  </div>
+
+
+
+  <div className="card rejected-card">
+
+    <h3>Rejected</h3>
+
+    <h2>{rejectedCount}</h2>
+
+  </div>
+
+
+</div>
+
+
+      <div className="leave-form-card">
 
       <h2>Apply Leave</h2>
 
@@ -249,6 +279,8 @@ function Leaves() {
         Apply
 
       </button>
+
+      </div>
 
 
 

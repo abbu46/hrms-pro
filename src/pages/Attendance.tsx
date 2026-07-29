@@ -1,19 +1,11 @@
 import { useState, useContext } from "react";
 import { AttendanceContext } from "../context/AttendanceContext";
-import "./Attendance.css";
 
 
 function Attendance() {
 
+
   const context = useContext(AttendanceContext);
-
-
-  const [date, setDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
-
-  const [attendanceHistory, setAttendanceHistory] = useState<any[]>([]);
-
 
 
   if (!context) {
@@ -21,12 +13,27 @@ function Attendance() {
   }
 
 
+  const {
+    attendance,
+    setAttendance,
+    attendanceHistory,
+    setAttendanceHistory
+  } = context;
 
-  const { attendance, setAttendance } = context;
+
+
+  const [date, setDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
 
 
 
-  const updateStatus = (index:number, status:string) => {
+
+  const updateStatus = (
+    index: number,
+    status: string
+  ) => {
+
 
     const updatedAttendance = [...attendance];
 
@@ -38,30 +45,73 @@ function Attendance() {
 
 
 
+
+
   const saveAttendance = () => {
 
+
+    const alreadySaved = attendanceHistory.find(
+      (record) => record.date === date
+    );
+
+
+    if (alreadySaved) {
+
+      alert(
+        "Attendance already saved for this date"
+      );
+
+      return;
+
+    }
+
+
+
     const record = {
+
       date,
-      employees: attendance.map((employee)=>({...employee}))
+
+      employees: attendance.map(
+        (employee) => ({
+          ...employee
+        })
+      )
+
     };
 
 
-    setAttendanceHistory([...attendanceHistory, record]);
 
-    alert("Attendance saved successfully!");
+    setAttendanceHistory([
+      ...attendanceHistory,
+      record
+    ]);
+
+
+
+    alert(
+      "Attendance saved successfully!"
+    );
+
 
   };
 
 
 
+
+
   const presentCount = attendance.filter(
-    employee => employee.status === "Present"
+    (employee) =>
+      employee.status === "Present"
   ).length;
+
+
 
 
   const absentCount = attendance.filter(
-    employee => employee.status === "Absent"
+    (employee) =>
+      employee.status === "Absent"
   ).length;
+
 
 
 
@@ -70,56 +120,84 @@ function Attendance() {
     <div className="attendance-page">
 
 
-      <h1>Attendance</h1>
+      <h1>Attendance Management</h1>
+
+     
+      
+     
+           <div className="attendance-header-card">
 
 
-      <label>
-        Select Date:
-
-        <input
-          
-          type="date"
-          value={date}
-          onChange={(e)=>setDate(e.target.value)}
-        />
-
-      </label>
+  <label>
+    Select Date
+  </label>
 
 
+  <input
+    type="date"
+    value={date}
+    onChange={(e)=>setDate(e.target.value)}
+  />
 
-      <p>Attendance Date: {date}</p>
+
+  <p>
+    Attendance Date: <strong>{date}</strong>
+  </p>
 
 
 
-      <button 
-        className="save-btn"
-        onClick={saveAttendance}
-      >
-        Save Attendance
-      </button>
+  <button onClick={saveAttendance}>
+    Save Attendance
+  </button>
 
+
+</div>
 
 
 
       <div className="attendance-cards">
+        
+      
 
 
-        <div className="attendance-card">
+        <div className="card">
+
           <h3>Total Employees</h3>
-          <h2>{attendance.length}</h2>
+
+          <h2>
+            {attendance.length}
+          </h2>
+
         </div>
 
 
-        <div className="attendance-card">
-          <h3>Present</h3>
-          <h2>{presentCount}</h2>
+
+        <div className="card">
+
+          <h3 style={{color:"green"}}>
+            Present
+          </h3>
+
+          <h2>
+            {presentCount}
+          </h2>
+
         </div>
 
 
-        <div className="attendance-card">
-          <h3>Absent</h3>
-          <h2>{absentCount}</h2>
+
+        <div className="card">
+
+          <h3 style={{color:"red"}}>
+            Absent
+          </h3>
+
+          <h2>
+            {absentCount}
+          </h2>
+
         </div>
+
 
 
       </div>
@@ -128,60 +206,91 @@ function Attendance() {
 
 
 
-      <table className="attendance-table">
+      <hr />
+
+
+
+      <table border={1} cellPadding={10}>
 
 
         <thead>
+
           <tr>
+
             <th>Name</th>
+
             <th>Department</th>
+
             <th>Status</th>
+
             <th>Action</th>
+
           </tr>
+
         </thead>
+
 
 
 
         <tbody>
 
 
-        {attendance.map((employee,index)=>(
+        {attendance.map(
+          (employee,index)=>(
 
           <tr key={index}>
 
 
-            <td>{employee.name}</td>
-
-            <td>{employee.department}</td>
+            <td>
+              {employee.name}
+            </td>
 
 
             <td>
+              {employee.department}
+            </td>
 
-              <span className={
-                employee.status === "Present"
-                ? "status-present"
-                : "status-absent"
-              }>
-                {employee.status}
-              </span>
+
+
+            <td
+              style={{
+                color:
+                employee.status==="Present"
+                ?"green"
+                :"red",
+                fontWeight:"bold"
+              }}
+            >
+
+              {employee.status}
 
             </td>
 
 
 
+
             <td>
 
               <button
-                className="attendance-btn present-btn"
-                onClick={()=>updateStatus(index,"Present")}
+                onClick={()=>
+                  updateStatus(
+                    index,
+                    "Present"
+                  )
+                }
               >
                 Present
               </button>
 
 
+
               <button
-                className="attendance-btn absent-btn"
-                onClick={()=>updateStatus(index,"Absent")}
+                onClick={()=>
+                  updateStatus(
+                    index,
+                    "Absent"
+                  )
+                }
               >
                 Absent
               </button>
@@ -197,57 +306,96 @@ function Attendance() {
 
         </tbody>
 
+
       </table>
 
 
 
-      <h2>Attendance History</h2>
+
+
+      <h2>
+        Attendance History
+      </h2>
+
+
 
 
       {
         attendanceHistory.length === 0 ? (
 
-          <p>No attendance records saved yet.</p>
+          <p>
+            No attendance history available.
+          </p>
 
         ) : (
 
-          attendanceHistory.map((record,index)=>(
+
+          attendanceHistory.map(
+            (record,index)=>(
 
             <div key={index}>
 
-              <h3>Date: {record.date}</h3>
 
-              <table className="attendance-table">
+              <h3>
+                Date: {record.date}
+              </h3>
+
+
+
+              <table
+                border={1}
+                cellPadding={10}
+              >
 
                 <thead>
+
                   <tr>
+
                     <th>Name</th>
+
                     <th>Department</th>
+
                     <th>Status</th>
+
                   </tr>
+
                 </thead>
 
 
                 <tbody>
 
-                {record.employees.map(
-                  (employee:any, empIndex:number)=>(
 
-                  <tr key={empIndex}>
-                    <td>{employee.name}</td>
-                    <td>{employee.department}</td>
+                {
+                  record.employees.map(
+                    (employee,empIndex)=>(
 
-                    <td>
-                      {employee.status}
-                    </td>
+                    <tr key={empIndex}>
 
-                  </tr>
+                      <td>
+                        {employee.name}
+                      </td>
 
-                ))}
+                      <td>
+                        {employee.department}
+                      </td>
+
+
+                      <td>
+                        {employee.status}
+                      </td>
+
+
+                    </tr>
+
+                  ))
+                }
+
 
                 </tbody>
 
+
               </table>
+
 
             </div>
 
@@ -255,6 +403,7 @@ function Attendance() {
 
         )
       }
+
 
 
     </div>
