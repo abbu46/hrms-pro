@@ -6,16 +6,19 @@ import "./Employees.css";
 
 function Employees() {
 
-
   const context = useContext(EmployeeContext);
-
 
   if (!context) {
     return <h2>Context not found</h2>;
   }
 
 
-  const { employees, setEmployees } = context;
+  const {
+    employees,
+    addEmployee,
+    updateEmployee,
+    deleteEmployee,
+  } = context;
 
 
 
@@ -27,48 +30,53 @@ function Employees() {
 
   const [position, setPosition] = useState("");
 
-  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [email, setEmail] = useState("");
+
+  const [joiningDate, setJoiningDate] = useState("");
+
+  const [editId, setEditId] = useState<string | null>(null);
 
   const [search, setSearch] = useState("");
 
 
 
-  function addEmployee() {
+  const handleSaveEmployee = async () => {
 
 
     const employeeData = {
 
-      name: name,
+      name,
 
-      department: department,
+      department,
 
-      position: position,
+      position,
 
       status: "Active",
+
+      email,
+
+      joiningDate,
 
     };
 
 
 
-    if (editIndex !== null) {
+    if (editId) {
 
 
-      const updatedEmployees = [...employees];
+      await updateEmployee(editId, employeeData);
 
-      updatedEmployees[editIndex] = employeeData;
-
-      setEmployees(updatedEmployees);
-
-      setEditIndex(null);
+      setEditId(null);
 
 
     } else {
 
 
-      setEmployees([...employees, employeeData]);
+      await addEmployee(employeeData);
 
 
     }
+
 
 
     setName("");
@@ -77,20 +85,11 @@ function Employees() {
 
     setPosition("");
 
+    setEmail("");
+
+    setJoiningDate("");
+
     setShowForm(false);
-
-  }
-
-
-
-
-  const deleteEmployee = (index: number) => {
-
-    const updatedEmployees = employees.filter(
-      (_, i) => i !== index
-    );
-
-    setEmployees(updatedEmployees);
 
   };
 
@@ -98,10 +97,7 @@ function Employees() {
 
 
 
-  const editEmployee = (index: number) => {
-
-
-    const employee = employees[index];
+  const handleEditEmployee = (employee: any) => {
 
 
     setName(employee.name);
@@ -110,7 +106,14 @@ function Employees() {
 
     setPosition(employee.position);
 
-    setEditIndex(index);
+    setEmail(employee.email);
+
+    setJoiningDate(
+      employee.joiningDate?.split("T")[0] || ""
+    );
+
+
+    setEditId(employee._id);
 
     setShowForm(true);
 
@@ -121,9 +124,26 @@ function Employees() {
 
 
 
+  const handleDeleteEmployee = async (id: string) => {
+
+
+    await deleteEmployee(id);
+
+
+  };
+
+
+
+
+
   const filteredEmployees = employees.filter((employee) =>
-    employee.name.toLowerCase().includes(search.toLowerCase())
+
+    employee.name
+      .toLowerCase()
+      .includes(search.toLowerCase())
+
   );
+
 
 
 
@@ -131,6 +151,7 @@ function Employees() {
   return (
 
     <div className="employees-page">
+
 
 
       <h1>Employees</h1>
@@ -147,80 +168,134 @@ function Employees() {
 
         value={search}
 
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={(e)=>setSearch(e.target.value)}
 
       />
 
 
 
       <button
+
         className="add-btn"
-        onClick={() => setShowForm(true)}
+
+        onClick={()=>setShowForm(true)}
+
       >
+
         + Add Employee
+
       </button>
 
 
 
 
 
-      
-
-        
-           {showForm && (
-
-  <div className="employee-form-card">
+      {showForm && (
 
 
-    <h2>
-      {editIndex !== null
-        ? "Edit Employee"
-        : "Add Employee"}
-    </h2>
+        <div className="employee-form-card">
 
 
+          <h2>
 
-    <input
-      type="text"
-      placeholder="Enter Name"
-      value={name}
-      onChange={(e) => setName(e.target.value)}
-    />
+            {editId
+              ? "Edit Employee"
+              : "Add Employee"}
+
+          </h2>
 
 
 
-    <input
-      type="text"
-      placeholder="Enter Department"
-      value={department}
-      onChange={(e) => setDepartment(e.target.value)}
-    />
+
+          <input
+
+            type="text"
+
+            placeholder="Enter Name"
+
+            value={name}
+
+            onChange={(e)=>setName(e.target.value)}
+
+          />
 
 
 
-    <input
-      type="text"
-      placeholder="Enter Position"
-      value={position}
-      onChange={(e) => setPosition(e.target.value)}
-    />
+
+          <input
+
+            type="text"
+
+            placeholder="Enter Department"
+
+            value={department}
+
+            onChange={(e)=>setDepartment(e.target.value)}
+
+          />
 
 
 
-    <button onClick={addEmployee}>
 
-      {editIndex !== null
-        ? "Update Employee"
-        : "Save Employee"}
+          <input
 
-    </button>
+            type="text"
+
+            placeholder="Enter Position"
+
+            value={position}
+
+            onChange={(e)=>setPosition(e.target.value)}
+
+          />
 
 
-  </div>
 
-)}
 
-      
+          <input
+
+            type="email"
+
+            placeholder="Enter Email"
+
+            value={email}
+
+            onChange={(e)=>setEmail(e.target.value)}
+
+          />
+
+
+
+
+          <input
+
+            type="date"
+
+            value={joiningDate}
+
+            onChange={(e)=>setJoiningDate(e.target.value)}
+
+          />
+
+
+
+
+          <button onClick={handleSaveEmployee}>
+
+
+            {editId
+              ? "Update Employee"
+              : "Save Employee"}
+
+
+          </button>
+
+
+        </div>
+
+
+      )}
+
 
 
 
@@ -244,7 +319,9 @@ function Employees() {
 
             <th>Action</th>
 
+
           </tr>
+
 
         </thead>
 
@@ -255,10 +332,13 @@ function Employees() {
         <tbody>
 
 
-          {filteredEmployees.map((employee, index) => (
+
+          {filteredEmployees.map((employee)=>(
 
 
-            <tr key={index}>
+
+            <tr key={employee._id}>
+
 
 
               <td>{employee.name}</td>
@@ -279,8 +359,8 @@ function Employees() {
 
                 </span>
 
-              </td>
 
+              </td>
 
 
 
@@ -288,13 +368,16 @@ function Employees() {
               <td>
 
 
-                <Link to={`/employee-profile/${index}`}>
+
+
+                <Link to={`/employee-profile/${employee._id}`}>
 
                   <button className="action-btn view-btn">
 
                     View Profile
 
                   </button>
+
 
                 </Link>
 
@@ -306,7 +389,9 @@ function Employees() {
 
                   className="action-btn edit-btn"
 
-                  onClick={() => editEmployee(index)}
+                  onClick={() =>
+                    handleEditEmployee(employee)
+                  }
 
                 >
 
@@ -322,7 +407,9 @@ function Employees() {
 
                   className="action-btn delete-btn"
 
-                  onClick={() => deleteEmployee(index)}
+                  onClick={() =>
+                    handleDeleteEmployee(employee._id)
+                  }
 
                 >
 
@@ -335,7 +422,9 @@ function Employees() {
               </td>
 
 
+
             </tr>
+
 
 
           ))}
@@ -351,7 +440,9 @@ function Employees() {
 
     </div>
 
+
   );
+
 
 }
 

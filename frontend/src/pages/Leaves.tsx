@@ -7,36 +7,66 @@ function Leaves() {
 
 
   const leaveContext = useContext(LeaveContext);
+
   const employeeContext = useContext(EmployeeContext);
 
 
 
   const [name, setName] = useState("");
-  const [leaveType, setLeaveType] = useState("Sick Leave");
+
+  const [leaveType, setLeaveType] =
+    useState("Sick Leave");
+
   const [days, setDays] = useState("");
+
   const [reason, setReason] = useState("");
 
 
 
+
+
   if (!leaveContext) {
+
     return <h2>Leave Context not found</h2>;
+
   }
+
 
 
   if (!employeeContext) {
+
     return <h2>Employee Context not found</h2>;
+
   }
 
 
 
-  const { leaves, setLeaves } = leaveContext;
-
-  const { employees } = employeeContext;
 
 
+  const {
+
+    leaves,
+
+    addLeave,
+
+    updateLeaveStatus,
+
+    deleteLeave
+
+  } = leaveContext;
 
 
-  const addLeave = () => {
+
+
+  const { employees } =
+    employeeContext;
+
+
+
+
+
+
+  const handleAddLeave = async () => {
 
 
     if (!name || !days || !reason) {
@@ -49,23 +79,21 @@ function Leaves() {
 
 
 
-    const newLeave = {
+
+    await addLeave({
 
       name,
 
       leaveType,
 
-      days: Number(days),
+      days:Number(days),
 
       reason,
 
-      status: "Pending",
+      status:"Pending"
 
-    };
+    });
 
-
-
-    setLeaves([...leaves, newLeave]);
 
 
 
@@ -81,57 +109,33 @@ function Leaves() {
 
 
 
-  const updateStatus = (index:number, status:string) => {
 
 
-    const updatedLeaves = leaves.map((leave, i) =>
-
-      i === index
-        ? { ...leave, status }
-        : leave
-
-    );
-
-
-    setLeaves(updatedLeaves);
-
-  };
+  const pendingCount =
+    leaves.filter(
+      leave =>
+      leave.status === "Pending"
+    ).length;
 
 
 
 
-
-  const deleteLeave = (index:number) => {
-
-
-    const updatedLeaves = leaves.filter(
-      (_, i) => i !== index
-    );
-
-
-    setLeaves(updatedLeaves);
-
-  };
+  const approvedCount =
+    leaves.filter(
+      leave =>
+      leave.status === "Approved"
+    ).length;
 
 
 
 
-
-  const pendingCount = leaves.filter(
-    leave => leave.status === "Pending"
-  ).length;
-
-
-
-  const approvedCount = leaves.filter(
-    leave => leave.status === "Approved"
-  ).length;
+  const rejectedCount =
+    leaves.filter(
+      leave =>
+      leave.status === "Rejected"
+    ).length;
 
 
-
-  const rejectedCount = leaves.filter(
-    leave => leave.status === "Rejected"
-  ).length;
 
 
 
@@ -142,143 +146,64 @@ function Leaves() {
     <div className="leaves-page">
 
 
-      <h1>Leaves</h1>
+
+      <h1>
+        Leaves
+      </h1>
+
+
+
 
 
 
       <div className="leave-cards">
 
 
-  <div className="card pending-card">
+        <div className="card pending-card">
 
-    <h3>Pending</h3>
+          <h3>
+            Pending
+          </h3>
 
-    <h2>{pendingCount}</h2>
+          <h2>
+            {pendingCount}
+          </h2>
 
-  </div>
+        </div>
 
 
 
-  <div className="card approved-card">
 
-    <h3>Approved</h3>
 
-    <h2>{approvedCount}</h2>
+        <div className="card approved-card">
 
-  </div>
+          <h3>
+            Approved
+          </h3>
 
+          <h2>
+            {approvedCount}
+          </h2>
 
+        </div>
 
-  <div className="card rejected-card">
 
-    <h3>Rejected</h3>
 
-    <h2>{rejectedCount}</h2>
 
-  </div>
 
+        <div className="card rejected-card">
 
-</div>
+          <h3>
+            Rejected
+          </h3>
 
+          <h2>
+            {rejectedCount}
+          </h2>
 
-      <div className="leave-form-card">
+        </div>
 
-      <h2>Apply Leave</h2>
 
-
-
-
-      <select
-
-        value={name}
-
-        onChange={(e)=>setName(e.target.value)}
-
-      >
-
-        <option value="">
-          Select Employee
-        </option>
-
-
-        {employees.map((employee,index)=>(
-
-          <option
-            key={index}
-            value={employee.name}
-          >
-
-            {employee.name}
-
-          </option>
-
-        ))}
-
-
-      </select>
-
-
-
-
-
-      <select
-
-        value={leaveType}
-
-        onChange={(e)=>setLeaveType(e.target.value)}
-
-      >
-
-        <option>Sick Leave</option>
-
-        <option>Casual Leave</option>
-
-        <option>Annual Leave</option>
-
-
-      </select>
-
-
-
-
-
-      <input
-
-        type="number"
-
-        placeholder="Days"
-
-        value={days}
-
-        onChange={(e)=>setDays(e.target.value)}
-
-      />
-
-
-
-
-
-      <input
-
-        type="text"
-
-        placeholder="Reason"
-
-        value={reason}
-
-        onChange={(e)=>setReason(e.target.value)}
-
-      />
-
-
-
-
-
-      <button onClick={addLeave}>
-
-        Apply
-
-      </button>
 
       </div>
 
@@ -286,34 +211,200 @@ function Leaves() {
 
 
 
-      <hr />
+
+
+
+      <div className="leave-form-card">
+
+
+        <h2>
+          Apply Leave
+        </h2>
 
 
 
 
 
-      <table border={1} cellPadding={10}>
+        <select
 
+          value={name}
+
+          onChange={
+            e=>setName(e.target.value)
+          }
+
+        >
+
+
+          <option value="">
+            Select Employee
+          </option>
+
+
+
+          {
+            employees.map(
+              employee=>(
+
+                <option
+
+                  key={employee.name}
+
+                  value={employee.name}
+
+                >
+
+                  {employee.name}
+
+                </option>
+
+              )
+            )
+          }
+
+
+        </select>
+
+
+
+
+
+
+
+        <select
+
+          value={leaveType}
+
+          onChange={
+            e=>setLeaveType(e.target.value)
+          }
+
+        >
+
+          <option>
+            Sick Leave
+          </option>
+
+
+          <option>
+            Casual Leave
+          </option>
+
+
+          <option>
+            Annual Leave
+          </option>
+
+
+        </select>
+
+
+
+
+
+
+        <input
+
+          type="number"
+
+          placeholder="Days"
+
+          value={days}
+
+          onChange={
+            e=>setDays(e.target.value)
+          }
+
+        />
+
+
+
+
+
+
+        <input
+
+          type="text"
+
+          placeholder="Reason"
+
+          value={reason}
+
+          onChange={
+            e=>setReason(e.target.value)
+          }
+
+        />
+
+
+
+
+
+        <button
+
+          onClick={handleAddLeave}
+
+        >
+
+          Apply
+
+        </button>
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+      <table
+        border={1}
+        cellPadding={10}
+      >
 
         <thead>
 
           <tr>
 
-            <th>Name</th>
+            <th>
+              Name
+            </th>
 
-            <th>Leave Type</th>
 
-            <th>Days</th>
+            <th>
+              Leave Type
+            </th>
 
-            <th>Reason</th>
 
-            <th>Status</th>
+            <th>
+              Days
+            </th>
 
-            <th>Actions</th>
+
+            <th>
+              Reason
+            </th>
+
+
+            <th>
+              Status
+            </th>
+
+
+            <th>
+              Actions
+            </th>
+
 
           </tr>
 
+
         </thead>
+
 
 
 
@@ -322,74 +413,113 @@ function Leaves() {
         <tbody>
 
 
-        {leaves.map((leave,index)=>(
+        {
+          leaves.map(
+            leave=>(
 
 
-          <tr key={index}>
+            <tr key={leave._id}>
 
 
-            <td>{leave.name}</td>
-
-
-            <td>{leave.leaveType}</td>
-
-
-            <td>{leave.days}</td>
-
-
-            <td>{leave.reason}</td>
-
-
-            <td>{leave.status}</td>
+              <td>
+                {leave.name}
+              </td>
 
 
 
-
-
-            <td>
-
-
-              <button
-                onClick={() =>
-                  updateStatus(index,"Approved")
-                }
-              >
-                Approve
-              </button>
+              <td>
+                {leave.leaveType}
+              </td>
 
 
 
+              <td>
+                {leave.days}
+              </td>
 
-              <button
-                onClick={() =>
-                  updateStatus(index,"Rejected")
-                }
-              >
-                Reject
-              </button>
+
+
+              <td>
+                {leave.reason}
+              </td>
+
+
+
+              <td>
+                {leave.status}
+              </td>
 
 
 
 
 
-              <button
-                onClick={() =>
-                  deleteLeave(index)
-                }
-              >
-                Delete
-              </button>
+              <td>
+
+
+                <button
+
+                  onClick={()=>
+                    updateLeaveStatus(
+                      leave._id!,
+                      "Approved"
+                    )
+                  }
+
+                >
+
+                  Approve
+
+                </button>
 
 
 
-            </td>
+
+
+                <button
+
+                  onClick={()=>
+                    updateLeaveStatus(
+                      leave._id!,
+                      "Rejected"
+                    )
+                  }
+
+                >
+
+                  Reject
+
+                </button>
 
 
 
-          </tr>
 
 
-        ))}
+
+                <button
+
+                  onClick={()=>
+                    deleteLeave(
+                      leave._id!
+                    )
+                  }
+
+                >
+
+                  Delete
+
+                </button>
+
+
+
+              </td>
+
+
+            </tr>
+
+
+          ))
+        }
+
 
 
         </tbody>
@@ -398,11 +528,14 @@ function Leaves() {
       </table>
 
 
+
     </div>
 
   );
 
+
 }
+
 
 
 export default Leaves;

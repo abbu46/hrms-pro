@@ -1,17 +1,21 @@
-import { createContext, useState, ReactNode } from "react";
-import {useEffect} from "react";
+import { createContext, useState, ReactNode, useEffect } from "react";
 
 type Employee = {
+  _id?: string;
   name: string;
   department: string;
   position: string;
   status: string;
+  joiningDate?: string;
+  email?: string;
 };
 
 
 type EmployeeContextType = {
   employees: Employee[];
-  setEmployees: React.Dispatch<React.SetStateAction<Employee[]>>;
+  addEmployee: (employee: Employee) => Promise<void>;
+  updateEmployee: (id: string, employee: Employee) => Promise<void>;
+  deleteEmployee: (id: string) => Promise<void>;
 };
 
 
@@ -20,43 +24,128 @@ export const EmployeeContext = createContext<EmployeeContextType | null>(null);
 
 function EmployeeProvider({ children }: { children: ReactNode }) {
 
-  const [employees, setEmployees] = useState<Employee[]>(() => {
-  const savedEmployees = localStorage.getItem("employees");
+  const [employees, setEmployees] = useState<Employee[]>([]);
 
-  return savedEmployees
-    ? JSON.parse(savedEmployees)
-    : [
-        {
-          name: "Abrar Abdul",
-          department: "IT",
-          position: "Front-end Developer",
-          status: "Active",
-        },
-        {
-          name: "John Smith",
-          department: "HR",
-          position: "HR Manager",
-          status: "Active",
-        },
-      ];
-});
-  useEffect(()=> {
-       localStorage.setItem(
-      "employees", 
-      JSON.stringify(employees)
+  const API_URL = "http://localhost:5000/api/employees";
+
+
+  // Get employees from backend
+  const fetchEmployees = async () => {
+    try {
+
+      const response = await fetch(API_URL);
+
+      const data = await response.json();
+
+      setEmployees(data);
+
+    } catch (error) {
+
+      console.log("Error fetching employees", error);
+
+    }
+  };
+
+
+  useEffect(() => {
+
+    fetchEmployees();
+
+  }, []);
+
+
+
+  // Add employee
+  const addEmployee = async (employee: Employee) => {
+
+    const response = await fetch(API_URL, {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify(employee),
+
+    });
+
+
+    const newEmployee = await response.json();
+
+    setEmployees((prev) => [...prev, newEmployee]);
+
+  };
+
+
+
+  // Update employee
+  const updateEmployee = async (
+    id: string,
+    employee: Employee
+  ) => {
+
+    const response = await fetch(`${API_URL}/${id}`, {
+
+      method: "PUT",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify(employee),
+
+    });
+
+
+    const updatedEmployee = await response.json();
+
+
+    setEmployees((prev) =>
+      prev.map((emp) =>
+        emp._id === id ? updatedEmployee : emp
+      )
     );
-    
-  }, [employees]);
+
+  };
+
+
+
+  // Delete employee
+  const deleteEmployee = async (id: string) => {
+
+    await fetch(`${API_URL}/${id}`, {
+
+      method: "DELETE",
+
+    });
+
+
+    setEmployees((prev) =>
+      prev.filter((emp) => emp._id !== id)
+    );
+
+  };
 
 
 
   return (
+
     <EmployeeContext.Provider
-      value={{ employees, setEmployees }}
+      value={{
+        employees,
+        addEmployee,
+        updateEmployee,
+        deleteEmployee,
+      }}
     >
+
       {children}
+
     </EmployeeContext.Provider>
+
   );
+
 }
 
 

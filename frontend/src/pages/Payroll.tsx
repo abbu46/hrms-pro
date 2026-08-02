@@ -4,11 +4,21 @@ import { jsPDF } from "jspdf";
 
 
 type PayrollData = {
+
+  _id?: string;
+
   name: string;
+
   basicSalary: number;
+
   allowance: number;
+
   deduction: number;
+
+  netSalary?: number;
+
 };
+
 
 
 
@@ -16,60 +26,6 @@ function Payroll() {
 
 
   const context = useContext(EmployeeContext);
-
-
-
-  const [payroll, setPayroll] = useState<PayrollData[]>(() => {
-
-    const savedPayroll = localStorage.getItem("payroll");
-
-
-    return savedPayroll
-      ? JSON.parse(savedPayroll)
-      : [
-          {
-            name: "Abrar Abdul",
-            basicSalary: 3000,
-            allowance: 500,
-            deduction: 200,
-          },
-          {
-            name: "John Smith",
-            basicSalary: 4000,
-            allowance: 600,
-            deduction: 300,
-          },
-        ];
-
-  });
-
-
-
-
-  const [name, setName] = useState("");
-
-  const [basicSalary, setBasicSalary] = useState("");
-
-  const [allowance, setAllowance] = useState("");
-
-  const [deduction, setDeduction] = useState("");
-
-  const [editIndex, setEditIndex] = useState<number | null>(null);
-
-
-
-
-
-  useEffect(() => {
-
-    localStorage.setItem(
-      "payroll",
-      JSON.stringify(payroll)
-    );
-
-  }, [payroll]);
-
-
 
 
 
@@ -81,132 +37,85 @@ function Payroll() {
 
 
 
-
   const { employees } = context;
 
 
 
 
 
-
-  const addPayroll = () => {
-
-
-    if (!name || !basicSalary) {
-
-      alert("Please enter employee name and salary");
-
-      return;
-
-    }
+  const [payroll, setPayroll] =
+    useState<PayrollData[]>([]);
 
 
 
-    const newPayroll = {
 
-      name,
+  const [name, setName] =
+    useState("");
 
-      basicSalary: Number(basicSalary),
+  const [basicSalary, setBasicSalary] =
+    useState("");
 
-      allowance: Number(allowance),
+  const [allowance, setAllowance] =
+    useState("");
 
-      deduction: Number(deduction),
+  const [deduction, setDeduction] =
+    useState("");
+
+  const [editId, setEditId] =
+    useState<string | null>(null);
+
+
+
+
+
+
+
+  // Load payroll from MongoDB
+
+  useEffect(() => {
+
+
+    const fetchPayroll = async()=>{
+
+
+      try{
+
+
+        const response = await fetch(
+          "http://localhost:5000/api/payroll"
+        );
+
+
+        const data =
+          await response.json();
+
+
+        setPayroll(data);
+
+
+
+      }catch(error){
+
+
+        console.log(
+          "Payroll loading error",
+          error
+        );
+
+
+      }
+
 
     };
 
 
 
-
-
-    if (editIndex !== null) {
-
-
-      const updatedPayroll = [...payroll];
-
-
-      updatedPayroll[editIndex] = newPayroll;
-
-
-      setPayroll(updatedPayroll);
-
-
-      setEditIndex(null);
-
-
-    } else {
-
-
-      setPayroll([
-        ...payroll,
-        newPayroll
-      ]);
-
-    }
+    fetchPayroll();
 
 
 
+  }, []);
 
-
-    setName("");
-
-    setBasicSalary("");
-
-    setAllowance("");
-
-    setDeduction("");
-
-  };
-
-
-
-
-
-
-
-  const editPayroll = (index:number) => {
-
-
-    const employee = payroll[index];
-
-
-    setName(employee.name);
-
-    setBasicSalary(
-      employee.basicSalary.toString()
-    );
-
-    setAllowance(
-      employee.allowance.toString()
-    );
-
-    setDeduction(
-      employee.deduction.toString()
-    );
-
-
-    setEditIndex(index);
-
-
-  };
-
-
-
-
-
-
-
-  const deletePayroll = (index:number) => {
-
-
-    const updatedPayroll = payroll.filter(
-      (_,i)=>i !== index
-    );
-
-
-    setPayroll(updatedPayroll);
-
-
-  };
 
 
 
@@ -216,16 +125,253 @@ function Payroll() {
 
 
   const calculateNetSalary = (
-    basicSalary:number,
+    basic:number,
     allowance:number,
     deduction:number
   ) => {
 
 
-    return basicSalary + allowance - deduction;
+    return basic + allowance - deduction;
 
 
   };
+
+
+
+
+
+
+
+
+
+  const addPayroll = async()=>{
+
+
+    if(!name || !basicSalary){
+
+
+      alert(
+        "Please enter employee name and salary"
+      );
+
+
+      return;
+
+
+    }
+
+
+
+
+    const payrollData = {
+
+
+      name,
+
+      basicSalary:Number(basicSalary),
+
+      allowance:Number(allowance),
+
+      deduction:Number(deduction)
+
+
+    };
+
+
+
+
+
+
+    try{
+
+
+
+      if(editId){
+
+
+        await fetch(
+
+          `http://localhost:5000/api/payroll/${editId}`,
+
+          {
+
+            method:"PUT",
+
+            headers:{
+
+              "Content-Type":
+              "application/json"
+
+            },
+
+            body:
+            JSON.stringify(payrollData)
+
+          }
+
+        );
+
+
+
+      }
+
+      else{
+
+
+        await fetch(
+
+          "http://localhost:5000/api/payroll",
+
+          {
+
+            method:"POST",
+
+            headers:{
+
+              "Content-Type":
+              "application/json"
+
+            },
+
+            body:
+            JSON.stringify(payrollData)
+
+          }
+
+        );
+
+
+      }
+
+
+
+
+
+
+      const response =
+        await fetch(
+          "http://localhost:5000/api/payroll"
+        );
+
+
+
+      const updated =
+        await response.json();
+
+
+
+      setPayroll(updated);
+
+
+
+
+
+      setName("");
+
+      setBasicSalary("");
+
+      setAllowance("");
+
+      setDeduction("");
+
+      setEditId(null);
+
+
+
+
+    }catch(error){
+
+
+      console.log(
+        "Payroll save error",
+        error
+      );
+
+
+    }
+
+
+  };
+
+
+
+
+
+
+
+
+
+  const editPayroll = (
+    employee:PayrollData
+  )=>{
+
+
+    setName(employee.name);
+
+
+    setBasicSalary(
+      employee.basicSalary.toString()
+    );
+
+
+    setAllowance(
+      employee.allowance.toString()
+    );
+
+
+    setDeduction(
+      employee.deduction.toString()
+    );
+
+
+    setEditId(
+      employee._id || null
+    );
+
+
+  };
+
+
+
+
+
+
+
+
+
+  const deletePayroll = async(
+    id?:string
+  )=>{
+
+
+    if(!id) return;
+
+
+
+    await fetch(
+
+      `http://localhost:5000/api/payroll/${id}`,
+
+      {
+
+        method:"DELETE"
+
+      }
+
+    );
+
+
+
+    setPayroll(
+      payroll.filter(
+        employee =>
+        employee._id !== id
+      )
+    );
+
+
+  };
+
 
 
 
@@ -236,7 +382,7 @@ function Payroll() {
 
   const downloadSalarySlip = (
     employee:PayrollData
-  ) => {
+  )=>{
 
 
     const doc = new jsPDF();
@@ -245,11 +391,14 @@ function Payroll() {
 
     const netSalary =
       calculateNetSalary(
-        employee.basicSalary,
-        employee.allowance,
-        employee.deduction
-      );
 
+        employee.basicSalary,
+
+        employee.allowance,
+
+        employee.deduction
+
+      );
 
 
 
@@ -304,24 +453,10 @@ function Payroll() {
     );
 
 
-    doc.setFontSize(14);
-
-
     doc.text(
       `Net Salary: $${netSalary}`,
       20,
       120
-    );
-
-
-
-    doc.setFontSize(10);
-
-
-    doc.text(
-      `Generated on: ${new Date().toLocaleDateString()}`,
-      20,
-      140
     );
 
 
@@ -332,6 +467,7 @@ function Payroll() {
 
 
   };
+
 
 
 
@@ -356,13 +492,12 @@ function Payroll() {
 
 
         <h2>
-
-          {editIndex !== null
+          {
+            editId
             ? "Update Payroll"
-            : "Add Payroll"}
-
+            : "Add Payroll"
+          }
         </h2>
-
 
 
 
@@ -371,7 +506,9 @@ function Payroll() {
 
           value={name}
 
-          onChange={(e)=>setName(e.target.value)}
+          onChange={
+            e=>setName(e.target.value)
+          }
 
         >
 
@@ -380,14 +517,16 @@ function Payroll() {
           </option>
 
 
-
           {
             employees.map(
-              (employee,index)=>(
+              employee=>(
 
               <option
-                key={index}
+
+                key={employee.name}
+
                 value={employee.name}
+
               >
 
                 {employee.name}
@@ -404,7 +543,6 @@ function Payroll() {
 
 
 
-
         <input
 
           type="number"
@@ -413,8 +551,8 @@ function Payroll() {
 
           value={basicSalary}
 
-          onChange={(e)=>
-            setBasicSalary(e.target.value)
+          onChange={
+            e=>setBasicSalary(e.target.value)
           }
 
         />
@@ -431,8 +569,8 @@ function Payroll() {
 
           value={allowance}
 
-          onChange={(e)=>
-            setAllowance(e.target.value)
+          onChange={
+            e=>setAllowance(e.target.value)
           }
 
         />
@@ -449,8 +587,8 @@ function Payroll() {
 
           value={deduction}
 
-          onChange={(e)=>
-            setDeduction(e.target.value)
+          onChange={
+            e=>setDeduction(e.target.value)
           }
 
         />
@@ -462,7 +600,7 @@ function Payroll() {
         <button onClick={addPayroll}>
 
           {
-            editIndex !== null
+            editId
             ? "Update Payroll"
             : "Add Payroll"
           }
@@ -472,6 +610,7 @@ function Payroll() {
 
 
       </div>
+
 
 
 
@@ -500,6 +639,7 @@ function Payroll() {
 
           </tr>
 
+
         </thead>
 
 
@@ -511,10 +651,10 @@ function Payroll() {
 
         {
           payroll.map(
-            (employee,index)=>(
+            employee=>(
 
 
-            <tr key={index}>
+            <tr key={employee._id}>
 
 
               <td>
@@ -537,11 +677,11 @@ function Payroll() {
               </td>
 
 
-
               <td>
 
                 $
                 {
+                  employee.netSalary ??
                   calculateNetSalary(
                     employee.basicSalary,
                     employee.allowance,
@@ -554,38 +694,55 @@ function Payroll() {
 
 
 
-
               <td>
 
 
                 <button
+
                   onClick={()=>
-                    editPayroll(index)
+                    editPayroll(employee)
                   }
+
                 >
+
                   Edit
+
                 </button>
 
 
 
 
+
                 <button
+
                   onClick={()=>
-                    deletePayroll(index)
+                    deletePayroll(
+                      employee._id
+                    )
                   }
+
                 >
+
                   Delete
+
                 </button>
 
 
 
 
+
                 <button
+
                   onClick={()=>
-                    downloadSalarySlip(employee)
+                    downloadSalarySlip(
+                      employee
+                    )
                   }
+
                 >
+
                   Download Salary Slip
+
                 </button>
 
 
@@ -593,11 +750,13 @@ function Payroll() {
               </td>
 
 
+
             </tr>
 
 
           ))
         }
+
 
 
         </tbody>
@@ -613,6 +772,7 @@ function Payroll() {
 
 
 }
+
 
 
 export default Payroll;

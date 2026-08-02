@@ -1,29 +1,40 @@
-import { createContext, useState, ReactNode, useEffect, useContext } from "react";
+import {
+  createContext,
+  useState,
+  ReactNode,
+  useEffect,
+  useContext,
+} from "react";
+
 import { EmployeeContext } from "./EmployeeContext";
 
 
 type Attendance = {
+
+  _id?: string;
   name: string;
   department: string;
   status: string;
+  date?: string;
+
 };
 
-
-type AttendanceRecord = {
-  date: string;
-  employees: Attendance[];
-};
 
 
 type AttendanceContextType = {
-  attendance: Attendance[];
-  setAttendance: React.Dispatch<React.SetStateAction<Attendance[]>>;
 
-  attendanceHistory: AttendanceRecord[];
-  setAttendanceHistory: React.Dispatch<
-    React.SetStateAction<AttendanceRecord[]>
+  attendance: Attendance[];
+
+  setAttendance: React.Dispatch<
+    React.SetStateAction<Attendance[]>
   >;
+
+  saveAttendance: (
+    date: string
+  ) => Promise<void>;
+
 };
+
 
 
 export const AttendanceContext =
@@ -31,105 +42,182 @@ export const AttendanceContext =
 
 
 
-function AttendanceProvider({ children }: { children: ReactNode }) {
+
+
+function AttendanceProvider({
+  children
+}: {
+  children: ReactNode
+}) {
 
 
   const employeeContext = useContext(EmployeeContext);
 
 
 
-  const [attendance, setAttendance] = useState<Attendance[]>(() => {
+  const [attendance, setAttendance] =
+    useState<Attendance[]>([]);
 
-    const savedAttendance = localStorage.getItem("attendance");
-
-    return savedAttendance
-      ? JSON.parse(savedAttendance)
-      : [];
-
-  });
-
-
-
-  const [attendanceHistory, setAttendanceHistory] = useState<
-    AttendanceRecord[]
-  >(() => {
-
-    const savedHistory = localStorage.getItem(
-      "attendanceHistory"
-    );
-
-
-    return savedHistory
-      ? JSON.parse(savedHistory)
-      : [];
-
-  });
 
 
 
 
   useEffect(() => {
 
-    if (employeeContext) {
+
+    const loadAttendance = async () => {
 
 
-      const updatedAttendance =
-        employeeContext.employees.map((employee) => {
+      try {
 
 
-          const existingEmployee = attendance.find(
-            (item) => item.name === employee.name
-          );
+        const response = await fetch(
+          "http://localhost:5000/api/attendance"
+        );
 
 
-          return existingEmployee
-            ? existingEmployee
-            : {
-                name: employee.name,
-                department: employee.department,
-                status: "Present",
-              };
+        const data = await response.json();
 
 
-        });
+        setAttendance(data);
 
 
 
-      setAttendance(updatedAttendance);
+      } catch (error) {
+
+
+        console.log(
+          "Attendance loading error",
+          error
+        );
+
+
+      }
+
+
+    };
+
+
+
+    loadAttendance();
+
+
+
+  }, []);
+
+
+
+
+
+
+
+  useEffect(() => {
+
+
+    if (
+      employeeContext &&
+      attendance.length === 0
+    ) {
+
+
+      const employees =
+        employeeContext.employees.map(
+          (employee)=>({
+
+            name: employee.name,
+
+            department:
+              employee.department,
+
+            status:"Present"
+
+          })
+
+        );
+
+
+      setAttendance(employees);
 
 
     }
 
 
-  }, [employeeContext?.employees]);
+  }, [
+    employeeContext?.employees
+  ]);
 
 
 
 
 
-  useEffect(() => {
-
-    localStorage.setItem(
-      "attendance",
-      JSON.stringify(attendance)
-    );
 
 
-  }, [attendance]);
+  const saveAttendance =
+    async (date:string)=>{
 
 
+      try {
 
 
-
-  useEffect(() => {
-
-    localStorage.setItem(
-      "attendanceHistory",
-      JSON.stringify(attendanceHistory)
-    );
+        for(
+          const employee of attendance
+        ){
 
 
-  }, [attendanceHistory]);
+          await fetch(
+            "http://localhost:5000/api/attendance",
+            {
+
+              method:"POST",
+
+              headers:{
+                "Content-Type":
+                "application/json"
+              },
+
+              body:JSON.stringify({
+
+                name:employee.name,
+
+                department:
+                employee.department,
+
+                status:
+                employee.status,
+
+                date
+
+              })
+
+            }
+
+          );
+
+
+        }
+
+
+        alert(
+          "Attendance saved successfully!"
+        );
+
+
+      }
+      catch(error){
+
+
+        console.log(
+          "Save attendance error",
+          error
+        );
+
+
+      }
+
+
+    };
+
+
 
 
 
@@ -138,13 +226,17 @@ function AttendanceProvider({ children }: { children: ReactNode }) {
   return (
 
     <AttendanceContext.Provider
+
       value={{
+
         attendance,
+
         setAttendance,
 
-        attendanceHistory,
-        setAttendanceHistory,
+        saveAttendance,
+
       }}
+
     >
 
       {children}
@@ -153,7 +245,9 @@ function AttendanceProvider({ children }: { children: ReactNode }) {
 
   );
 
+
 }
+
 
 
 export default AttendanceProvider;

@@ -9,15 +9,17 @@ function Attendance() {
 
 
   if (!context) {
+
     return <h2>Attendance Context not found</h2>;
+
   }
+
 
 
   const {
     attendance,
     setAttendance,
-    attendanceHistory,
-    setAttendanceHistory
+    saveAttendance
   } = context;
 
 
@@ -29,69 +31,23 @@ function Attendance() {
 
 
 
+
   const updateStatus = (
-    index: number,
-    status: string
+    index:number,
+    status:string
   ) => {
 
 
-    const updatedAttendance = [...attendance];
+    const updatedAttendance =
+      [...attendance];
 
-    updatedAttendance[index].status = status;
+
+    updatedAttendance[index].status =
+      status;
+
 
     setAttendance(updatedAttendance);
 
-  };
-
-
-
-
-
-  const saveAttendance = () => {
-
-
-    const alreadySaved = attendanceHistory.find(
-      (record) => record.date === date
-    );
-
-
-    if (alreadySaved) {
-
-      alert(
-        "Attendance already saved for this date"
-      );
-
-      return;
-
-    }
-
-
-
-    const record = {
-
-      date,
-
-      employees: attendance.map(
-        (employee) => ({
-          ...employee
-        })
-      )
-
-    };
-
-
-
-    setAttendanceHistory([
-      ...attendanceHistory,
-      record
-    ]);
-
-
-
-    alert(
-      "Attendance saved successfully!"
-    );
-
 
   };
 
@@ -99,18 +55,25 @@ function Attendance() {
 
 
 
-  const presentCount = attendance.filter(
-    (employee) =>
-      employee.status === "Present"
-  ).length;
+
+
+  const presentCount =
+    attendance.filter(
+      employee =>
+        employee.status === "Present"
+    ).length;
 
 
 
 
-  const absentCount = attendance.filter(
-    (employee) =>
-      employee.status === "Absent"
-  ).length;
+
+  const absentCount =
+    attendance.filter(
+      employee =>
+        employee.status === "Absent"
+    ).length;
+
+
 
 
 
@@ -120,49 +83,76 @@ function Attendance() {
     <div className="attendance-page">
 
 
-      <h1>Attendance Management</h1>
-
-     
-      
-     
-           <div className="attendance-header-card">
-
-
-  <label>
-    Select Date
-  </label>
-
-
-  <input
-    type="date"
-    value={date}
-    onChange={(e)=>setDate(e.target.value)}
-  />
-
-
-  <p>
-    Attendance Date: <strong>{date}</strong>
-  </p>
+      <h1>
+        Attendance Management
+      </h1>
 
 
 
-  <button onClick={saveAttendance}>
-    Save Attendance
-  </button>
 
 
-</div>
+      <div className="attendance-header-card">
+
+
+        <label>
+          Select Date
+        </label>
+
+
+        <input
+
+          type="date"
+
+          value={date}
+
+          onChange={(e)=>
+            setDate(e.target.value)
+          }
+
+        />
+
+
+
+        <p>
+          Attendance Date:
+          <strong>
+            {date}
+          </strong>
+        </p>
+
+
+
+
+        <button
+
+          onClick={()=>
+            saveAttendance(date)
+          }
+
+        >
+
+          Save Attendance
+
+        </button>
+
+
+      </div>
+
+
+
+
 
 
 
       <div className="attendance-cards">
-        
-      
+
 
 
         <div className="card">
 
-          <h3>Total Employees</h3>
+          <h3>
+            Total Employees
+          </h3>
 
           <h2>
             {attendance.length}
@@ -172,29 +162,45 @@ function Attendance() {
 
 
 
+
+
         <div className="card">
 
           <h3 style={{color:"green"}}>
+
             Present
+
           </h3>
+
 
           <h2>
             {presentCount}
           </h2>
 
+
         </div>
+
+
+
 
 
 
         <div className="card">
 
+
           <h3 style={{color:"red"}}>
+
             Absent
+
           </h3>
 
+
           <h2>
+
             {absentCount}
+
           </h2>
+
 
         </div>
 
@@ -206,28 +212,44 @@ function Attendance() {
 
 
 
-      <hr />
 
 
-
-      <table border={1} cellPadding={10}>
+      <table
+        border={1}
+        cellPadding={10}
+      >
 
 
         <thead>
 
+
           <tr>
 
-            <th>Name</th>
+            <th>
+              Name
+            </th>
 
-            <th>Department</th>
 
-            <th>Status</th>
+            <th>
+              Department
+            </th>
 
-            <th>Action</th>
+
+            <th>
+              Status
+            </th>
+
+
+            <th>
+              Action
+            </th>
+
 
           </tr>
 
+
         </thead>
+
 
 
 
@@ -235,73 +257,101 @@ function Attendance() {
         <tbody>
 
 
-        {attendance.map(
-          (employee,index)=>(
 
-          <tr key={index}>
-
-
-            <td>
-              {employee.name}
-            </td>
+        {
+          attendance.map(
+            (employee,index)=>(
 
 
-            <td>
-              {employee.department}
-            </td>
+            <tr key={index}>
+
+
+              <td>
+                {employee.name}
+              </td>
 
 
 
-            <td
+              <td>
+                {employee.department}
+              </td>
+
+
+
+
+              <td
+
               style={{
+
                 color:
                 employee.status==="Present"
                 ?"green"
                 :"red",
+
                 fontWeight:"bold"
+
               }}
-            >
 
-              {employee.status}
+              >
 
-            </td>
+                {employee.status}
+
+              </td>
 
 
 
 
-            <td>
 
-              <button
+
+              <td>
+
+
+                <button
+
                 onClick={()=>
                   updateStatus(
                     index,
                     "Present"
                   )
                 }
-              >
-                Present
-              </button>
+
+                >
+
+                  Present
+
+                </button>
 
 
 
-              <button
+
+
+                <button
+
                 onClick={()=>
                   updateStatus(
                     index,
                     "Absent"
                   )
                 }
-              >
-                Absent
-              </button>
+
+                >
+
+                  Absent
+
+                </button>
 
 
-            </td>
+              </td>
 
 
-          </tr>
 
-        ))}
+            </tr>
+
+
+          ))
+
+        }
+
 
 
         </tbody>
@@ -313,102 +363,10 @@ function Attendance() {
 
 
 
-      <h2>
-        Attendance History
-      </h2>
-
-
-
-
-      {
-        attendanceHistory.length === 0 ? (
-
-          <p>
-            No attendance history available.
-          </p>
-
-        ) : (
-
-
-          attendanceHistory.map(
-            (record,index)=>(
-
-            <div key={index}>
-
-
-              <h3>
-                Date: {record.date}
-              </h3>
-
-
-
-              <table
-                border={1}
-                cellPadding={10}
-              >
-
-                <thead>
-
-                  <tr>
-
-                    <th>Name</th>
-
-                    <th>Department</th>
-
-                    <th>Status</th>
-
-                  </tr>
-
-                </thead>
-
-
-                <tbody>
-
-
-                {
-                  record.employees.map(
-                    (employee,empIndex)=>(
-
-                    <tr key={empIndex}>
-
-                      <td>
-                        {employee.name}
-                      </td>
-
-                      <td>
-                        {employee.department}
-                      </td>
-
-
-                      <td>
-                        {employee.status}
-                      </td>
-
-
-                    </tr>
-
-                  ))
-                }
-
-
-                </tbody>
-
-
-              </table>
-
-
-            </div>
-
-          ))
-
-        )
-      }
-
-
-
     </div>
 
   );
+
 
 }
 
