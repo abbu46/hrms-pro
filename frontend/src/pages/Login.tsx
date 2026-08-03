@@ -39,24 +39,29 @@ function Login() {
 
 
       const response = await fetch(
-        "http://localhost:5000/api/auth/login",
+
+        `${import.meta.env.VITE_API_URL}/auth/login`,
+
         {
 
           method: "POST",
 
           headers: {
+
             "Content-Type": "application/json",
+
           },
 
           body: JSON.stringify({
 
             email,
 
-            password
+            password,
 
-          })
+          }),
 
         }
+
       );
 
 
@@ -73,7 +78,9 @@ function Login() {
 
 
         alert(
+
           data.message || "Login failed"
+
         );
 
 
@@ -87,17 +94,27 @@ function Login() {
 
 
 
+
       localStorage.setItem(
+
         "token",
+
         data.token
+
       );
+
+
 
 
 
       localStorage.setItem(
+
         "user",
+
         JSON.stringify(data.user)
+
       );
+
 
 
 
@@ -108,17 +125,23 @@ function Login() {
 
 
 
-    } catch(error) {
+    } catch (error) {
 
 
       console.log(
+
         "Login error",
+
         error
+
       );
 
 
+
       alert(
+
         "Server connection failed"
+
       );
 
 
@@ -146,14 +169,20 @@ function Login() {
 
 
       <h1>
+
         HRMS Pro Login
+
       </h1>
 
 
 
+
       <p>
+
         Welcome back! Please login to continue.
+
       </p>
+
 
 
 
@@ -167,7 +196,9 @@ function Login() {
         value={email}
 
         onChange={
-          (e)=>setEmail(e.target.value)
+
+          (e) => setEmail(e.target.value)
+
         }
 
       />
@@ -176,7 +207,9 @@ function Login() {
 
 
 
-      <br/><br/>
+      <br />
+
+      <br />
 
 
 
@@ -191,7 +224,9 @@ function Login() {
         value={password}
 
         onChange={
-          (e)=>setPassword(e.target.value)
+
+          (e) => setPassword(e.target.value)
+
         }
 
       />
@@ -200,22 +235,33 @@ function Login() {
 
 
 
-      <br/><br/>
+      <br />
+
+      <br />
 
 
 
 
 
       <button
+
         onClick={handleLogin}
+
         disabled={loading}
+
       >
 
+
         {
+
           loading
+
           ? "Logging in..."
+
           : "Login"
+
         }
+
 
       </button>
 
