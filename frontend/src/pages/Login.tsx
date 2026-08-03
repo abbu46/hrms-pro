@@ -8,18 +8,22 @@ function Login() {
   const navigate = useNavigate();
 
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
 
   const [password, setPassword] = useState("");
 
+  const [loading, setLoading] = useState(false);
 
 
-  const handleLogin = () => {
 
 
-    if (!username || !password) {
 
-      alert("Please enter username and password");
+  const handleLogin = async () => {
+
+
+    if (!email || !password) {
+
+      alert("Please enter email and password");
 
       return;
 
@@ -27,23 +31,110 @@ function Login() {
 
 
 
-    localStorage.setItem(
-      "isLoggedIn",
-      "true"
-    );
+    try {
 
 
-    localStorage.setItem(
-      "username",
-      username
-      
-    );
+      setLoading(true);
 
 
-    navigate("/dashboard");
+
+      const response = await fetch(
+        "http://localhost:5000/api/auth/login",
+        {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+
+            email,
+
+            password
+
+          })
+
+        }
+      );
+
+
+
+
+
+      const data = await response.json();
+
+
+
+
+
+      if (!response.ok) {
+
+
+        alert(
+          data.message || "Login failed"
+        );
+
+
+        return;
+
+
+      }
+
+
+
+
+
+
+      localStorage.setItem(
+        "token",
+        data.token
+      );
+
+
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
+
+
+
+
+      navigate("/dashboard");
+
+
+
+
+
+    } catch(error) {
+
+
+      console.log(
+        "Login error",
+        error
+      );
+
+
+      alert(
+        "Server connection failed"
+      );
+
+
+
+    } finally {
+
+
+      setLoading(false);
+
+
+    }
 
 
   };
+
+
 
 
 
@@ -54,7 +145,10 @@ function Login() {
     <div>
 
 
-      <h1>HRMS Pro Login</h1>
+      <h1>
+        HRMS Pro Login
+      </h1>
+
 
 
       <p>
@@ -63,21 +157,28 @@ function Login() {
 
 
 
+
       <input
 
-        type="text"
+        type="email"
 
-        placeholder="Username"
+        placeholder="Email"
 
-        value={username}
+        value={email}
 
-        onChange={(e)=>setUsername(e.target.value)}
+        onChange={
+          (e)=>setEmail(e.target.value)
+        }
 
       />
 
 
 
+
+
       <br/><br/>
+
+
 
 
 
@@ -89,9 +190,13 @@ function Login() {
 
         value={password}
 
-        onChange={(e)=>setPassword(e.target.value)}
+        onChange={
+          (e)=>setPassword(e.target.value)
+        }
 
       />
+
+
 
 
 
@@ -99,9 +204,18 @@ function Login() {
 
 
 
-      <button onClick={handleLogin}>
 
-        Login
+
+      <button
+        onClick={handleLogin}
+        disabled={loading}
+      >
+
+        {
+          loading
+          ? "Logging in..."
+          : "Login"
+        }
 
       </button>
 
@@ -110,6 +224,7 @@ function Login() {
     </div>
 
   );
+
 
 }
 

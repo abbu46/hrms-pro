@@ -63,17 +63,18 @@ function DashboardLayout() {
 
 
 
-  const presentToday = attendance.filter(
-    (employee) =>
-      employee.status === "Present"
-  ).length;
+  const presentToday = Array.isArray(attendance)
+  ? attendance.filter(
+      (employee) => employee.status === "Present"
+    ).length
+  : 0;
 
 
-
-  const absentToday = attendance.filter(
-    (employee) =>
-      employee.status === "Absent"
-  ).length;
+const absentToday = Array.isArray(attendance)
+  ? attendance.filter(
+      (employee) => employee.status === "Absent"
+    ).length
+  : 0;
 
 
 

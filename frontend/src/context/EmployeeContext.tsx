@@ -1,5 +1,6 @@
 import { createContext, useState, ReactNode, useEffect } from "react";
 
+
 type Employee = {
   _id?: string;
   name: string;
@@ -11,6 +12,7 @@ type Employee = {
 };
 
 
+
 type EmployeeContextType = {
   employees: Employee[];
   addEmployee: (employee: Employee) => Promise<void>;
@@ -19,15 +21,20 @@ type EmployeeContextType = {
 };
 
 
+
 export const EmployeeContext =
   createContext<EmployeeContextType | null>(null);
+
+
 
 
 
 function EmployeeProvider({ children }: { children: ReactNode }) {
 
 
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [employees, setEmployees] =
+    useState<Employee[]>([]);
+
 
 
 
@@ -36,28 +43,79 @@ function EmployeeProvider({ children }: { children: ReactNode }) {
 
 
 
-  // Get employees from backend
+
+
+
+  const getAuthHeaders = () => {
+
+    const token =
+      localStorage.getItem("token");
+
+
+    return {
+
+      "Content-Type": "application/json",
+
+      Authorization:
+        `Bearer ${token}`,
+
+    };
+
+  };
+
+
+
+
+
+
+
+  // Get employees
   const fetchEmployees = async () => {
+
 
     try {
 
-      const response = await fetch(API_URL);
 
-      const data = await response.json();
+      const response =
+        await fetch(
+          API_URL,
+          {
+            headers:
+              getAuthHeaders(),
+          }
+        );
 
-      setEmployees(data);
 
 
-    } catch (error) {
+      const data =
+        await response.json();
+
+
+
+      setEmployees(
+  Array.isArray(data)
+    ? data
+    : data.employees || []
+);
+
+
+
+    } catch(error) {
+
 
       console.log(
         "Error fetching employees",
         error
       );
 
+
     }
 
+
   };
+
+
+
 
 
 
@@ -73,23 +131,31 @@ function EmployeeProvider({ children }: { children: ReactNode }) {
 
 
 
+
+
+
   // Add employee
+
   const addEmployee = async (
     employee: Employee
   ) => {
 
 
-    const response = await fetch(API_URL, {
+    const response =
+      await fetch(
+        API_URL,
+        {
 
-      method: "POST",
+          method:"POST",
 
-      headers: {
-        "Content-Type": "application/json",
-      },
+          headers:
+            getAuthHeaders(),
 
-      body: JSON.stringify(employee),
+          body:
+            JSON.stringify(employee),
 
-    });
+        }
+      );
 
 
 
@@ -98,10 +164,13 @@ function EmployeeProvider({ children }: { children: ReactNode }) {
 
 
 
-    setEmployees((prev) => [
-      ...prev,
-      newEmployee
-    ]);
+
+    setEmployees((prev)=>
+      [
+        ...prev,
+        newEmployee
+      ]
+    );
 
 
   };
@@ -112,27 +181,32 @@ function EmployeeProvider({ children }: { children: ReactNode }) {
 
 
 
+
+
   // Update employee
-  const updateEmployee = async (
-    id: string,
-    employee: Employee
+
+  const updateEmployee = async(
+    id:string,
+    employee:Employee
   ) => {
 
 
-    const response = await fetch(
-      `${API_URL}/${id}`,
-      {
+    const response =
+      await fetch(
+        `${API_URL}/${id}`,
+        {
 
-        method: "PUT",
+          method:"PUT",
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+          headers:
+            getAuthHeaders(),
 
-        body: JSON.stringify(employee),
+          body:
+            JSON.stringify(employee),
 
-      }
-    );
+        }
+      );
+
 
 
 
@@ -142,9 +216,9 @@ function EmployeeProvider({ children }: { children: ReactNode }) {
 
 
 
-    setEmployees((prev) =>
+    setEmployees((prev)=>
 
-      prev.map((emp) =>
+      prev.map((emp)=>
 
         emp._id === id
           ? updatedEmployee
@@ -164,9 +238,11 @@ function EmployeeProvider({ children }: { children: ReactNode }) {
 
 
 
+
   // Delete employee
-  const deleteEmployee = async (
-    id: string
+
+  const deleteEmployee = async(
+    id:string
   ) => {
 
 
@@ -174,17 +250,21 @@ function EmployeeProvider({ children }: { children: ReactNode }) {
       `${API_URL}/${id}`,
       {
 
-        method: "DELETE",
+        method:"DELETE",
+
+        headers:
+          getAuthHeaders(),
 
       }
     );
 
 
 
-    setEmployees((prev) =>
+
+    setEmployees((prev)=>
 
       prev.filter(
-        (emp) =>
+        (emp)=>
           emp._id !== id
       )
 
@@ -192,6 +272,8 @@ function EmployeeProvider({ children }: { children: ReactNode }) {
 
 
   };
+
+
 
 
 
@@ -224,6 +306,9 @@ function EmployeeProvider({ children }: { children: ReactNode }) {
 
 
 }
+
+
+
 
 
 export default EmployeeProvider;

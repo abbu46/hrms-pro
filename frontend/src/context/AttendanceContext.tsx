@@ -9,15 +9,22 @@ import {
 import { EmployeeContext } from "./EmployeeContext";
 
 
+
 type Attendance = {
 
   _id?: string;
+
   name: string;
+
   department: string;
+
   status: string;
+
   date?: string;
 
 };
+
+
 
 
 
@@ -37,8 +44,13 @@ type AttendanceContextType = {
 
 
 
+
+
 export const AttendanceContext =
   createContext<AttendanceContextType | null>(null);
+
+
+
 
 
 
@@ -51,12 +63,14 @@ function AttendanceProvider({
 }) {
 
 
-  const employeeContext = useContext(EmployeeContext);
+  const employeeContext =
+    useContext(EmployeeContext);
 
 
 
   const [attendance, setAttendance] =
     useState<Attendance[]>([]);
+
 
 
 
@@ -67,6 +81,30 @@ function AttendanceProvider({
 
 
 
+
+
+  const getAuthHeaders = () => {
+
+    return {
+
+      "Content-Type": "application/json",
+
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`,
+
+    };
+
+  };
+
+
+
+
+
+
+
+
+  // Load attendance
+
   useEffect(() => {
 
 
@@ -76,19 +114,32 @@ function AttendanceProvider({
       try {
 
 
-        const response = await fetch(
-          API_URL
+        const response =
+          await fetch(
+            API_URL,
+            {
+              headers:
+                getAuthHeaders(),
+            }
+          );
+
+
+
+        const data =
+          await response.json();
+
+
+
+
+        setAttendance(
+          Array.isArray(data)
+          ? data
+          : data.attendance || []
         );
 
 
-        const data = await response.json();
 
-
-        setAttendance(data);
-
-
-
-      } catch (error) {
+      } catch(error) {
 
 
         console.log(
@@ -116,29 +167,36 @@ function AttendanceProvider({
 
 
 
+
+
+  // Create default attendance from employees
+
   useEffect(() => {
 
 
-    if (
+    if(
       employeeContext &&
       attendance.length === 0
-    ) {
+    ){
 
 
       const employees =
         employeeContext.employees.map(
           (employee)=>({
 
-            name: employee.name,
+            name:
+              employee.name,
 
             department:
               employee.department,
 
-            status:"Present"
+            status:
+              "Present"
 
           })
 
         );
+
 
 
       setAttendance(employees);
@@ -147,7 +205,7 @@ function AttendanceProvider({
     }
 
 
-  }, [
+  },[
     employeeContext?.employees
   ]);
 
@@ -157,11 +215,15 @@ function AttendanceProvider({
 
 
 
+
+
+  // Save attendance
+
   const saveAttendance =
-    async (date:string)=>{
+    async(date:string)=>{
 
 
-      try {
+      try{
 
 
         for(
@@ -175,31 +237,31 @@ function AttendanceProvider({
 
               method:"POST",
 
-              headers:{
-                "Content-Type":
-                "application/json"
-              },
+              headers:
+                getAuthHeaders(),
 
-              body:JSON.stringify({
+              body:
+                JSON.stringify({
 
-                name:employee.name,
+                  name:
+                    employee.name,
 
-                department:
-                employee.department,
+                  department:
+                    employee.department,
 
-                status:
-                employee.status,
+                  status:
+                    employee.status,
 
-                date
+                  date
 
-              })
+                })
 
             }
-
           );
 
 
         }
+
 
 
         alert(
@@ -207,8 +269,8 @@ function AttendanceProvider({
         );
 
 
-      }
-      catch(error){
+
+      }catch(error){
 
 
         console.log(
@@ -221,6 +283,7 @@ function AttendanceProvider({
 
 
     };
+
 
 
 
@@ -252,6 +315,8 @@ function AttendanceProvider({
 
 
 }
+
+
 
 
 

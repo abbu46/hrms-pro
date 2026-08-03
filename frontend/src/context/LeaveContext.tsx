@@ -24,6 +24,7 @@ type Leave = {
 
 
 
+
 type LeaveContextType = {
 
   leaves: Leave[];
@@ -49,8 +50,12 @@ type LeaveContextType = {
 
 
 
+
+
 export const LeaveContext =
   createContext<LeaveContextType | null>(null);
+
+
 
 
 
@@ -63,8 +68,10 @@ function LeaveProvider({
 }) {
 
 
+
   const [leaves, setLeaves] =
     useState<Leave[]>([]);
+
 
 
 
@@ -75,7 +82,29 @@ function LeaveProvider({
 
 
 
-  // Get leaves from MongoDB
+
+
+  const getAuthHeaders = () => {
+
+    return {
+
+      "Content-Type": "application/json",
+
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`,
+
+    };
+
+  };
+
+
+
+
+
+
+
+
+  // Get leaves
 
   useEffect(() => {
 
@@ -86,16 +115,27 @@ function LeaveProvider({
       try {
 
 
-        const response = await fetch(
-          API_URL
-        );
+        const response =
+          await fetch(
+            API_URL,
+            {
+              headers:
+                getAuthHeaders(),
+            }
+          );
+
 
 
         const data =
           await response.json();
 
 
-        setLeaves(data);
+
+        setLeaves(
+          Array.isArray(data)
+          ? data
+          : data.leaves || []
+        );
 
 
 
@@ -127,9 +167,11 @@ function LeaveProvider({
 
 
 
+
+
   // Add leave
 
-  const addLeave = async (
+  const addLeave = async(
     leave: Leave
   ) => {
 
@@ -137,26 +179,27 @@ function LeaveProvider({
     try {
 
 
-      const response = await fetch(
-        API_URL,
-        {
+      const response =
+        await fetch(
+          API_URL,
+          {
 
-          method:"POST",
+            method:"POST",
 
-          headers:{
-            "Content-Type":
-            "application/json"
-          },
+            headers:
+              getAuthHeaders(),
 
-          body:JSON.stringify(leave)
+            body:
+              JSON.stringify(leave)
 
-        }
-      );
+          }
+        );
 
 
 
       const data =
         await response.json();
+
 
 
 
@@ -167,7 +210,7 @@ function LeaveProvider({
 
 
 
-    } catch(error) {
+    }catch(error){
 
 
       console.log(
@@ -187,38 +230,36 @@ function LeaveProvider({
 
 
 
+
+
   // Update leave status
 
   const updateLeaveStatus =
-    async (
+    async(
       id:string,
       status:string
-    ) => {
+    )=>{
 
 
-      try {
+      try{
 
 
         const response =
           await fetch(
-
             `${API_URL}/${id}`,
-
             {
 
               method:"PUT",
 
-              headers:{
-                "Content-Type":
-                "application/json"
-              },
+              headers:
+                getAuthHeaders(),
 
-              body:JSON.stringify({
-                status
-              })
+              body:
+                JSON.stringify({
+                  status
+                })
 
             }
-
           );
 
 
@@ -228,11 +269,11 @@ function LeaveProvider({
 
 
 
+
         setLeaves((prev)=>
 
           prev.map(
-
-            leave =>
+            (leave)=>
 
             leave._id === id
             ? updated
@@ -244,7 +285,7 @@ function LeaveProvider({
 
 
 
-      } catch(error) {
+      }catch(error){
 
 
         console.log(
@@ -264,6 +305,8 @@ function LeaveProvider({
 
 
 
+
+
   // Delete leave
 
   const deleteLeave =
@@ -274,13 +317,15 @@ function LeaveProvider({
 
 
         await fetch(
-
           `${API_URL}/${id}`,
-
           {
-            method:"DELETE"
-          }
 
+            method:"DELETE",
+
+            headers:
+              getAuthHeaders(),
+
+          }
         );
 
 
@@ -288,11 +333,8 @@ function LeaveProvider({
         setLeaves((prev)=>
 
           prev.filter(
-
-            leave =>
-
-            leave._id !== id
-
+            (leave)=>
+              leave._id !== id
           )
 
         );
@@ -312,6 +354,7 @@ function LeaveProvider({
 
 
     };
+
 
 
 
@@ -344,7 +387,6 @@ function LeaveProvider({
     </LeaveContext.Provider>
 
   );
-
 
 }
 

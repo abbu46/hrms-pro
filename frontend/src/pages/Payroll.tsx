@@ -41,7 +41,9 @@ function Payroll() {
 
 
 
-  const API_URL = "http://localhost:5000/api/payroll";
+  const API_URL =
+    `${import.meta.env.VITE_API_URL}/payroll`;
+
 
 
 
@@ -70,29 +72,70 @@ function Payroll() {
 
 
 
-  // Load payroll from backend
+
+
+  const getAuthHeaders = () => {
+
+    return {
+
+      "Content-Type":
+        "application/json",
+
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+
+    };
+
+  };
+
+
+
+
+
+
+
+
+
+  // Load payroll
 
   useEffect(() => {
 
 
-    const fetchPayroll = async () => {
+    const fetchPayroll = async()=>{
 
 
-      try {
+      try{
 
 
-        const response = await fetch(API_URL);
+        const response =
+          await fetch(
+
+            API_URL,
+
+            {
+              headers:
+                getAuthHeaders()
+            }
+
+          );
+
 
 
         const data =
           await response.json();
 
 
-        setPayroll(data);
+
+        setPayroll(
+          Array.isArray(data)
+          ? data
+          : data.payroll || []
+        );
 
 
 
-      } catch(error) {
+      }
+      catch(error){
 
 
         console.log(
@@ -113,6 +156,8 @@ function Payroll() {
 
 
   }, []);
+
+
 
 
 
@@ -143,11 +188,11 @@ function Payroll() {
 
 
 
-  const addPayroll = async () => {
+
+  const addPayroll = async()=>{
 
 
-
-    if(!name || !basicSalary) {
+    if(!name || !basicSalary){
 
 
       alert(
@@ -181,11 +226,12 @@ function Payroll() {
 
 
 
-    try {
+
+    try{
 
 
 
-      if(editId) {
+      if(editId){
 
 
 
@@ -197,14 +243,11 @@ function Payroll() {
 
             method:"PUT",
 
-            headers:{
+            headers:
+              getAuthHeaders(),
 
-              "Content-Type":
-              "application/json"
-
-            },
-
-            body:JSON.stringify(payrollData)
+            body:
+              JSON.stringify(payrollData)
 
           }
 
@@ -212,7 +255,9 @@ function Payroll() {
 
 
 
-      } else {
+      }
+
+      else{
 
 
 
@@ -224,14 +269,11 @@ function Payroll() {
 
             method:"POST",
 
-            headers:{
+            headers:
+              getAuthHeaders(),
 
-              "Content-Type":
-              "application/json"
-
-            },
-
-            body:JSON.stringify(payrollData)
+            body:
+              JSON.stringify(payrollData)
 
           }
 
@@ -245,8 +287,20 @@ function Payroll() {
 
 
 
+
       const response =
-        await fetch(API_URL);
+        await fetch(
+
+          API_URL,
+
+          {
+
+            headers:
+              getAuthHeaders()
+
+          }
+
+        );
 
 
 
@@ -256,6 +310,7 @@ function Payroll() {
 
 
       setPayroll(updated);
+
 
 
 
@@ -272,8 +327,8 @@ function Payroll() {
 
 
 
-
-    } catch(error) {
+    }
+    catch(error){
 
 
       console.log(
@@ -297,7 +352,7 @@ function Payroll() {
 
   const editPayroll = (
     employee:PayrollData
-  ) => {
+  )=>{
 
 
     setName(employee.name);
@@ -335,8 +390,7 @@ function Payroll() {
 
   const deletePayroll = async(
     id?:string
-  ) => {
-
+  )=>{
 
 
     if(!id) return;
@@ -350,11 +404,15 @@ function Payroll() {
 
       {
 
-        method:"DELETE"
+        method:"DELETE",
+
+        headers:
+          getAuthHeaders()
 
       }
 
     );
+
 
 
 
@@ -386,8 +444,7 @@ function Payroll() {
 
     employee:PayrollData
 
-  ) => {
-
+  )=>{
 
 
     const doc = new jsPDF();
@@ -406,7 +463,6 @@ function Payroll() {
         employee.deduction
 
       );
-
 
 
 
@@ -494,7 +550,6 @@ function Payroll() {
 
   return (
 
-
     <div className="payroll-page">
 
 
@@ -505,8 +560,8 @@ function Payroll() {
 
 
 
-      <div className="payroll-form-card">
 
+      <div className="payroll-form-card">
 
 
         <h2>
@@ -533,16 +588,13 @@ function Payroll() {
 
         >
 
-
           <option value="">
             Select Employee
           </option>
 
 
-
           {
             employees.map(employee=>(
-
 
               <option
 
@@ -556,11 +608,8 @@ function Payroll() {
 
               </option>
 
-
             ))
-
           }
-
 
 
         </select>
@@ -586,6 +635,7 @@ function Payroll() {
 
 
 
+
         <input
 
           type="number"
@@ -599,6 +649,7 @@ function Payroll() {
           }
 
         />
+
 
 
 
@@ -620,6 +671,7 @@ function Payroll() {
 
 
 
+
         <button onClick={addPayroll}>
 
 
@@ -635,6 +687,8 @@ function Payroll() {
 
 
       </div>
+
+
 
 
 
@@ -674,7 +728,6 @@ function Payroll() {
         <tbody>
 
 
-
         {
           payroll.map(employee=>(
 
@@ -702,7 +755,6 @@ function Payroll() {
               </td>
 
 
-
               <td>
 
                 $
@@ -724,15 +776,11 @@ function Payroll() {
 
 
                 <button
-
                   onClick={() =>
                     editPayroll(employee)
                   }
-
                 >
-
                   Edit
-
                 </button>
 
 
@@ -740,15 +788,13 @@ function Payroll() {
 
 
                 <button
-
                   onClick={() =>
-                    deletePayroll(employee._id)
+                    deletePayroll(
+                      employee._id
+                    )
                   }
-
                 >
-
                   Delete
-
                 </button>
 
 
@@ -756,15 +802,11 @@ function Payroll() {
 
 
                 <button
-
                   onClick={() =>
                     downloadSalarySlip(employee)
                   }
-
                 >
-
                   Download Salary Slip
-
                 </button>
 
 
@@ -777,9 +819,7 @@ function Payroll() {
 
 
           ))
-
         }
-
 
 
         </tbody>
@@ -790,7 +830,6 @@ function Payroll() {
 
 
     </div>
-
 
   );
 
