@@ -68,6 +68,11 @@ function LeaveProvider({
 
 
 
+  const API_URL =
+    `${import.meta.env.VITE_API_URL}/leaves`;
+
+
+
 
 
   // Get leaves from MongoDB
@@ -82,7 +87,7 @@ function LeaveProvider({
 
 
         const response = await fetch(
-          "http://localhost:5000/api/leaves"
+          API_URL
         );
 
 
@@ -122,6 +127,8 @@ function LeaveProvider({
 
 
 
+  // Add leave
+
   const addLeave = async (
     leave: Leave
   ) => {
@@ -131,7 +138,7 @@ function LeaveProvider({
 
 
       const response = await fetch(
-        "http://localhost:5000/api/leaves",
+        API_URL,
         {
 
           method:"POST",
@@ -153,8 +160,8 @@ function LeaveProvider({
 
 
 
-      setLeaves([
-        ...leaves,
+      setLeaves((prev)=>[
+        ...prev,
         data
       ]);
 
@@ -180,6 +187,8 @@ function LeaveProvider({
 
 
 
+  // Update leave status
+
   const updateLeaveStatus =
     async (
       id:string,
@@ -193,7 +202,7 @@ function LeaveProvider({
         const response =
           await fetch(
 
-            `http://localhost:5000/api/leaves/${id}`,
+            `${API_URL}/${id}`,
 
             {
 
@@ -219,13 +228,18 @@ function LeaveProvider({
 
 
 
-        setLeaves(
-          leaves.map(
+        setLeaves((prev)=>
+
+          prev.map(
+
             leave =>
+
             leave._id === id
             ? updated
             : leave
+
           )
+
         );
 
 
@@ -250,6 +264,8 @@ function LeaveProvider({
 
 
 
+  // Delete leave
+
   const deleteLeave =
     async(id:string)=>{
 
@@ -259,7 +275,7 @@ function LeaveProvider({
 
         await fetch(
 
-          `http://localhost:5000/api/leaves/${id}`,
+          `${API_URL}/${id}`,
 
           {
             method:"DELETE"
@@ -269,11 +285,16 @@ function LeaveProvider({
 
 
 
-        setLeaves(
-          leaves.filter(
+        setLeaves((prev)=>
+
+          prev.filter(
+
             leave =>
+
             leave._id !== id
+
           )
+
         );
 
 

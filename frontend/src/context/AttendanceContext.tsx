@@ -60,6 +60,11 @@ function AttendanceProvider({
 
 
 
+  const API_URL =
+    `${import.meta.env.VITE_API_URL}/attendance`;
+
+
+
 
 
   useEffect(() => {
@@ -72,7 +77,7 @@ function AttendanceProvider({
 
 
         const response = await fetch(
-          "http://localhost:5000/api/attendance"
+          API_URL
         );
 
 
@@ -165,7 +170,7 @@ function AttendanceProvider({
 
 
           await fetch(
-            "http://localhost:5000/api/attendance",
+            API_URL,
             {
 
               method:"POST",

@@ -41,11 +41,13 @@ function Payroll() {
 
 
 
+  const API_URL = "http://localhost:5000/api/payroll";
+
+
 
 
   const [payroll, setPayroll] =
     useState<PayrollData[]>([]);
-
 
 
 
@@ -68,22 +70,18 @@ function Payroll() {
 
 
 
-
-
-  // Load payroll from MongoDB
+  // Load payroll from backend
 
   useEffect(() => {
 
 
-    const fetchPayroll = async()=>{
+    const fetchPayroll = async () => {
 
 
-      try{
+      try {
 
 
-        const response = await fetch(
-          "http://localhost:5000/api/payroll"
-        );
+        const response = await fetch(API_URL);
 
 
         const data =
@@ -94,7 +92,7 @@ function Payroll() {
 
 
 
-      }catch(error){
+      } catch(error) {
 
 
         console.log(
@@ -122,12 +120,14 @@ function Payroll() {
 
 
 
-
-
   const calculateNetSalary = (
+
     basic:number,
+
     allowance:number,
+
     deduction:number
+
   ) => {
 
 
@@ -143,11 +143,11 @@ function Payroll() {
 
 
 
+  const addPayroll = async () => {
 
-  const addPayroll = async()=>{
 
 
-    if(!name || !basicSalary){
+    if(!name || !basicSalary) {
 
 
       alert(
@@ -181,17 +181,17 @@ function Payroll() {
 
 
 
-
-    try{
-
+    try {
 
 
-      if(editId){
+
+      if(editId) {
+
 
 
         await fetch(
 
-          `http://localhost:5000/api/payroll/${editId}`,
+          `${API_URL}/${editId}`,
 
           {
 
@@ -204,8 +204,7 @@ function Payroll() {
 
             },
 
-            body:
-            JSON.stringify(payrollData)
+            body:JSON.stringify(payrollData)
 
           }
 
@@ -213,14 +212,13 @@ function Payroll() {
 
 
 
-      }
+      } else {
 
-      else{
 
 
         await fetch(
 
-          "http://localhost:5000/api/payroll",
+          API_URL,
 
           {
 
@@ -233,8 +231,7 @@ function Payroll() {
 
             },
 
-            body:
-            JSON.stringify(payrollData)
+            body:JSON.stringify(payrollData)
 
           }
 
@@ -249,9 +246,7 @@ function Payroll() {
 
 
       const response =
-        await fetch(
-          "http://localhost:5000/api/payroll"
-        );
+        await fetch(API_URL);
 
 
 
@@ -261,7 +256,6 @@ function Payroll() {
 
 
       setPayroll(updated);
-
 
 
 
@@ -279,7 +273,7 @@ function Payroll() {
 
 
 
-    }catch(error){
+    } catch(error) {
 
 
       console.log(
@@ -303,7 +297,7 @@ function Payroll() {
 
   const editPayroll = (
     employee:PayrollData
-  )=>{
+  ) => {
 
 
     setName(employee.name);
@@ -341,16 +335,18 @@ function Payroll() {
 
   const deletePayroll = async(
     id?:string
-  )=>{
+  ) => {
+
 
 
     if(!id) return;
 
 
 
+
     await fetch(
 
-      `http://localhost:5000/api/payroll/${id}`,
+      `${API_URL}/${id}`,
 
       {
 
@@ -362,11 +358,17 @@ function Payroll() {
 
 
 
+
     setPayroll(
+
       payroll.filter(
+
         employee =>
+
         employee._id !== id
+
       )
+
     );
 
 
@@ -381,15 +383,20 @@ function Payroll() {
 
 
   const downloadSalarySlip = (
+
     employee:PayrollData
-  )=>{
+
+  ) => {
+
 
 
     const doc = new jsPDF();
 
 
 
+
     const netSalary =
+
       calculateNetSalary(
 
         employee.basicSalary,
@@ -402,7 +409,10 @@ function Payroll() {
 
 
 
+
+
     doc.setFontSize(20);
+
 
     doc.text(
       "HRMS Pro",
@@ -413,6 +423,7 @@ function Payroll() {
 
 
     doc.setFontSize(16);
+
 
     doc.text(
       "Salary Slip",
@@ -425,11 +436,13 @@ function Payroll() {
     doc.setFontSize(12);
 
 
+
     doc.text(
       `Employee Name: ${employee.name}`,
       20,
       55
     );
+
 
 
     doc.text(
@@ -439,6 +452,7 @@ function Payroll() {
     );
 
 
+
     doc.text(
       `Allowance: $${employee.allowance}`,
       20,
@@ -446,11 +460,13 @@ function Payroll() {
     );
 
 
+
     doc.text(
       `Deduction: $${employee.deduction}`,
       20,
       100
     );
+
 
 
     doc.text(
@@ -475,7 +491,9 @@ function Payroll() {
 
 
 
+
   return (
+
 
     <div className="payroll-page">
 
@@ -487,17 +505,20 @@ function Payroll() {
 
 
 
-
       <div className="payroll-form-card">
 
 
+
         <h2>
+
           {
             editId
             ? "Update Payroll"
             : "Add Payroll"
           }
+
         </h2>
+
 
 
 
@@ -512,14 +533,16 @@ function Payroll() {
 
         >
 
+
           <option value="">
             Select Employee
           </option>
 
 
+
           {
-            employees.map(
-              employee=>(
+            employees.map(employee=>(
+
 
               <option
 
@@ -533,8 +556,11 @@ function Payroll() {
 
               </option>
 
+
             ))
+
           }
+
 
 
         </select>
@@ -560,7 +586,6 @@ function Payroll() {
 
 
 
-
         <input
 
           type="number"
@@ -574,7 +599,6 @@ function Payroll() {
           }
 
         />
-
 
 
 
@@ -596,14 +620,15 @@ function Payroll() {
 
 
 
-
         <button onClick={addPayroll}>
+
 
           {
             editId
             ? "Update Payroll"
             : "Add Payroll"
           }
+
 
         </button>
 
@@ -616,12 +641,11 @@ function Payroll() {
 
 
 
-
-
       <table>
 
 
         <thead>
+
 
           <tr>
 
@@ -637,6 +661,7 @@ function Payroll() {
 
             <th>Action</th>
 
+
           </tr>
 
 
@@ -649,9 +674,9 @@ function Payroll() {
         <tbody>
 
 
+
         {
-          payroll.map(
-            employee=>(
+          payroll.map(employee=>(
 
 
             <tr key={employee._id}>
@@ -677,6 +702,7 @@ function Payroll() {
               </td>
 
 
+
               <td>
 
                 $
@@ -699,7 +725,7 @@ function Payroll() {
 
                 <button
 
-                  onClick={()=>
+                  onClick={() =>
                     editPayroll(employee)
                   }
 
@@ -715,10 +741,8 @@ function Payroll() {
 
                 <button
 
-                  onClick={()=>
-                    deletePayroll(
-                      employee._id
-                    )
+                  onClick={() =>
+                    deletePayroll(employee._id)
                   }
 
                 >
@@ -733,10 +757,8 @@ function Payroll() {
 
                 <button
 
-                  onClick={()=>
-                    downloadSalarySlip(
-                      employee
-                    )
+                  onClick={() =>
+                    downloadSalarySlip(employee)
                   }
 
                 >
@@ -755,6 +777,7 @@ function Payroll() {
 
 
           ))
+
         }
 
 
@@ -767,6 +790,7 @@ function Payroll() {
 
 
     </div>
+
 
   );
 
