@@ -1,11 +1,12 @@
+import React from "react";
 import { Navigate } from "react-router-dom";
 
 
 function ProtectedRoute({
   children
 }: {
-  children: JSX.Element
-}) {
+  children: React.ReactNode})
+   {
 
 
   const token =

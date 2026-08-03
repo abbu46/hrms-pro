@@ -313,8 +313,8 @@ const absentToday = Array.isArray(attendance)
                 >
 
 
-                  {attendanceData.map(
-                    (entry,index)=>(
+                  {
+                  attendanceData.map((_,index)=>(
 
 
                       <Cell

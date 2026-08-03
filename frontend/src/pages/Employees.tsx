@@ -408,7 +408,7 @@ function Employees() {
                   className="action-btn delete-btn"
 
                   onClick={() =>
-                    handleDeleteEmployee(employee._id)
+                    handleDeleteEmployee(employee._id!)
                   }
 
                 >

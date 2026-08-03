@@ -1,10 +1,11 @@
 import {
   createContext,
   useState,
-  ReactNode,
+  
   useEffect,
   useContext,
 } from "react";
+import type{ReactNode} from "react";
 
 import { EmployeeContext } from "./EmployeeContext";
 
