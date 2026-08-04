@@ -132,14 +132,28 @@ npm run dev
 
 ## 📸 Screenshots
 
-Add screenshots of:
+### Login Page
+![Login Page](screenshots/login.png)
 
-- Login Page
-- Dashboard
-- Employee Management
-- Attendance Management
-- Leave Management
-- Payroll Management
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+![Dashboard Details](screenshots/dashboard-details.png)
+
+### Employee Management
+![Employees](screenshots/employees.png)
+
+### Employee Profile
+![Employee Profile](screenshots/employee-profile.png)
+
+### Attendance Management
+![Attendance](screenshots/attendance.png)
+
+### Leave Management
+![Leaves](screenshots/leaves.png)
+
+### Payroll Management
+![Payroll](screenshots/payroll.png)
 
 ---
 
