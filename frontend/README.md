@@ -2,6 +2,12 @@
 
 HRMS Pro is a modern Human Resource Management System built using React and TypeScript. It helps manage employees, attendance, leaves, payroll, and employee profiles through a clean dashboard interface.
 
+
+![React](https://img.shields.io/badge/React-TypeScript-blue)
+![Vite](https://img.shields.io/badge/Vite-Frontend-purple)
+![Node.js](https://img.shields.io/badge/Node.js-Backend-green)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-brightgreen)
+![Deployment](https://img.shields.io/badge/Deployed-Vercel-black)
 ## 🚀 Features
 
 ### Authentication
@@ -136,21 +142,21 @@ npm run dev
 ![Login Page](screenshots/login.png)
 
 ### Dashboard
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](screenshots/Dashboard.png)
 
-![Dashboard Details](screenshots/dashboard-details.png)
+![Dashboard Details](screenshots/Dashboard-details.png)
 
 ### Employee Management
-![Employees](screenshots/employees.png)
+![Employee Page](screenshots/Employee.png)
 
 ### Employee Profile
 ![Employee Profile](screenshots/employee-profile.png)
 
 ### Attendance Management
-![Attendance](screenshots/attendance.png)
+![Attendance](screenshots/Attendance.png)
 
 ### Leave Management
-![Leaves](screenshots/leaves.png)
+![Leaves](screenshots/Leaves.png)
 
 ### Payroll Management
 ![Payroll](screenshots/payroll.png)
